@@ -188,7 +188,7 @@ const LeftSidebar = () => {
                 display: "flex",
                 minHeight: "100vh",
                 width: "100vw",
-                 position: "sticky",
+                position: "sticky",
                 top: 0,
                 flexShrink: 0,
                 fontFamily: "'Segoe UI', system-ui, sans-serif",
@@ -565,37 +565,7 @@ const LeftSidebar = () => {
                 </div>
             </div>
 
-            {/* ── Main Content Preview ── */}
-            {/* <div style={{
-        // flex: 1,
-        background: "#0d1117",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        width:"100%",
-        gap: "12px",
-      }}>
-        <div style={{
-          fontSize: "2rem",
-          filter: "drop-shadow(0 0 12px rgba(16,185,129,0.5))",
-        }}>
-          🌿
-        </div>
-        <div style={{
-          fontSize: "1rem", fontWeight: "700",
-          color: "rgba(255,255,255,0.20)",
-          letterSpacing: "0.08em",
-        }}>
-          {active.toUpperCase()} PAGE
-        </div>
-        <div style={{
-          fontSize: "0.75rem",
-          color: "rgba(255,255,255,0.10)",
-        }}>
-          Select a menu item to navigate
-        </div>
-      </div> */}
+          
 
             {/* right side contet */}
             <div

@@ -14,14 +14,16 @@ const DashBoardOverview = () => {
   ];
 
   return (
-    <div className="w-full">
-      <AdminNavbar/>
-  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10 p-5">
+    <div className="min-h-screen bg-[#0d1117] text-[#c9d1d9] text-white px-6 py-8">
+      <h1 className="text-[26px] font-extrabold text-[#e6edf3] tracking-tight">Dashboard </h1>
+      <p className="text-gray-500">System Overview and Statistics</p>
+      {/* <AdminNavbar/> */}
+  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10 ">
       {data.map((item, i) => {
         return (
           <div
             key={i}
-            className="bg-blue-950 border border-gray-700 rounded-xl p-6 text-white flex flex-col items-center justify-center shadow-md hover:scale-105 transition"
+            className="bg-gray-900 border border-gray-700 rounded-xl p-6 text-white flex flex-col items-center justify-center shadow-md hover:scale-105 transition"
           >
             <h1 className="text-3xl font-bold">{item.count}</h1>
             <p className="text-sm text-gray-300 mt-2">{item.label}</p>

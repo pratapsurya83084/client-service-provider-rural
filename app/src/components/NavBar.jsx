@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import {  Link} from 'react-router-dom';
 
 const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -150,6 +151,7 @@ const NavBar = () => {
           {/* ── Desktop CTA Buttons ── */}
           {!isMobile && (
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flexShrink: 0 }}>
+               <Link to={"/login"}> 
               <button
                 style={{
                   padding: "9px 20px",
@@ -168,6 +170,7 @@ const NavBar = () => {
               >
                 Sign In
               </button>
+              </Link>
               <button
                 style={{
                   padding: "9px 20px",
@@ -199,6 +202,7 @@ const NavBar = () => {
           {/* ── Mobile: Sign In + Hamburger ── */}
           {isMobile && (
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+             <Link to={"/login"}> 
               <button
                 style={{
                   padding: "7px 14px",
@@ -213,6 +217,7 @@ const NavBar = () => {
               >
                 Sign In
               </button>
+             </Link>
 
               {/* Hamburger */}
               <button

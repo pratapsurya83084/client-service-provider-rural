@@ -114,7 +114,7 @@ const Providers = () => {
     return (
         <div className="w-full">
             {/* navbar */}
-            <Navbar />
+            {/* <Navbar /> */}
 
             <div style={s.page}>
                 <style>{`

@@ -52,7 +52,7 @@ const Services = () => {
 
     return (
         <div>
-            <AdminNavbar />
+            {/* <AdminNavbar /> */}
             <div
                 className="min-h-screen bg-[#0d1117] text-[#c9d1d9] px-6 py-8"
                 style={{ fontFamily: "'DM Sans', sans-serif" }}
