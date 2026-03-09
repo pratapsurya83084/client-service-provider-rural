@@ -1,0 +1,45 @@
+1. 🦸 Hero Section (First impression)
+Tagline: "Connecting Farmers with Trusted Service Providers"
+CTA buttons: "Find a Service" / "Become a Provider"
+Background: farmland/rural imagery or illustration
+
+
+2. 🔍 How It Works (3-step process)
+Farmer: Search → Book → Get Service Done
+Simple icons, easy to understand for rural users
+
+
+3. 🛠️ Service Categories (Core feature)
+Tractor Rental, Irrigation, Pesticide Spraying, Soil Testing, Harvesting, Veterinary, Seeds & Fertilizers, Labour etc.
+Grid of icon cards
+
+
+4. 🌟 Why Choose Kannect (Trust building)
+Verified Providers, Local Language Support, Affordable Pricing, Doorstep Service, Fast Booking
+
+
+
+
+
+5. 📍 How to Get Started (Onboarding funnel)
+Register → Browse Services → Book → Pay → Rate
+
+
+6. 💬 Testimonials (Social proof)
+Farmer quotes with name, village, and star rating
+
+
+7. 📊 Stats / Impact Banner (Credibility)
+"500+ Farmers Served", "50+ Service Providers", "20+ Villages Covered"
+
+
+8. 📱 App Download Banner (Mobile-first push)
+"Available on Android" with QR code or Play Store button
+
+
+9. 🔔 Newsletter / Stay Updated (Lead capture)
+Simple email/mobile input: "Get farming tips & service alerts"
+
+
+10. 🔗 Footer
+Logo, Links, Contact, Social Media, Terms
