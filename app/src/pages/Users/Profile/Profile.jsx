@@ -1,21 +1,69 @@
-
 import MobileFooter from "../../../components/footer/MobileFooter";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../../UserContext/CreateContext";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 // ── Profile Page
 const Profile = () => {
     const [activeTab, setActiveTab] = useState("profile");
-    const [name, setName] = useState("vivek");
-    const [email, setEmail] = useState("");
+    const [name, setName] = useState("NA");
+    const [email, setEmail] = useState("NA");
     const [saved, setSaved] = useState(false);
+    const { GetProfile } = useContext(UserContext);
+    const token = localStorage.getItem("token");
+    const [Profile, setProfile] = useState([]);
 
-    const user = { name: "vivek", role: "Customer", id: 7 };
+    const navigate = useNavigate();
 
+    async function getUserProfile() {
+        if (!token) {
+            // console.log("User token  in:", token);
+            toast.error("token not found");
+            return;
+        }
+        try {
+            const res = await GetProfile(token);
+            localStorage.setItem("userAuth", JSON.stringify(res));
+            // console.log("profile is :", res);
+            setEmail(res[0].email);
+            setName(res[0].username);
+            setProfile(res);
+        } catch (error) {
+            console.log("error while fetching profile :", error);
+        }
+    }
+
+    useEffect(() => {
+        getUserProfile();
+    }, []);
+
+    const LogoutUser = () => {
+        //clear all local storage auth
+        localStorage.removeItem("token");
+        localStorage.removeItem("ExpireTime");
+        localStorage.removeItem("userAuth");
+        toast.success("Logout SuccessFull");
+        setTimeout(()=>{
+            navigate("/login")
+        },1000);
+    };
+
+    // const user = { name: "vivek", role: "Customer", id: 7 } ;
+    //   const user = { email,mobileNumber,role } = Profile;
     const handleSave = () => {
         if (!name.trim()) return;
         setSaved(true);
         setTimeout(() => setSaved(false), 2500);
     };
+
+
+
+      // get UserAuth
+  const User =  JSON.parse(localStorage.getItem("userAuth"));
+
+//   console.log("profile :",User);
+
 
     return (
         <div className="min-h-screen bg-[#EEF2F7] font-sans">
@@ -27,6 +75,7 @@ const Profile = () => {
             )}
 
             <div className="max-w-[480px] mx-auto px-4 pt-7 pb-28 flex flex-col gap-4">
+               <Toaster position="top-center" reverseOrder={false} />
                 {/* Page title */}
                 <h1 className="text-[26px] font-extrabold text-gray-900 tracking-tight">
                     Profile
@@ -42,18 +91,18 @@ const Profile = () => {
                                 "linear-gradient(135deg, #818cf8, #6366f1)",
                         }}
                     >
-                        {user.name.charAt(0).toUpperCase()}
+                        {Profile[0]?.username?.charAt(0).toUpperCase() || "NA"}
                     </div>
 
                     <p className="text-[17px] font-bold text-gray-900 mt-1">
-                        {user.name}
+                        {Profile[0]?.username || "NA"}
                     </p>
                     <p className="text-[13px] text-gray-400 font-medium">
-                        {user.role}
+                        {Profile[0]?.role || "NA"}
                     </p>
 
                     <span className="text-[12px] font-semibold text-[#3B9EE8] bg-blue-50 border border-blue-100 rounded-full px-3 py-0.5 mt-0.5">
-                        ID: {user.id}
+                        ID: {Profile[0]?.id || "NA"}
                     </span>
                 </div>
 
@@ -102,11 +151,17 @@ const Profile = () => {
                 </div>
 
                 {/* Logout button */}
-                <button className="w-full bg-[#EF4444] hover:bg-[#dc2626] text-white font-bold text-[15px] py-3.5 rounded-xl transition-colors duration-150 cursor-pointer">
+                <button
+                    onClick={LogoutUser}
+                    className="w-full bg-[#EF4444] hover:bg-[#dc2626] text-white font-bold text-[15px] py-3.5 rounded-xl transition-colors duration-150 cursor-pointer"
+                >
                     Logout
                 </button>
             </div>
-            <MobileFooter activeTab={activeTab} setActiveTab={setActiveTab} />
+     {/* farmer Footer */}
+    {User?.[0]?.role==="Farmer"&&( <MobileFooter activeTab={activeTab} setActiveTab={setActiveTab} />)}
+       
+         
         </div>
     );
 };

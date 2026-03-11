@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+
 
 const HomeIcon = ({ active }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -32,37 +32,86 @@ const ServicesIcon = ({ active }) => (
   </svg>
 )
 
-const BookingsIcon = ({ active }) => (
+// const BookingsIcon = ({ active }) => (
+//   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+//     <rect
+//       x="3"
+//       y="4"
+//       width="18"
+//       height="17"
+//       rx="2"
+//       stroke={active ? '#3B9EE8' : '#9CA3AF'}
+//       strokeWidth="1.8"
+//     />
+//     <path
+//       d="M3 9H21"
+//       stroke={active ? '#3B9EE8' : '#9CA3AF'}
+//       strokeWidth="1.8"
+//       strokeLinecap="round"
+//     />
+//     <path
+//       d="M8 2V6M16 2V6"
+//       stroke={active ? '#3B9EE8' : '#9CA3AF'}
+//       strokeWidth="1.8"
+//       strokeLinecap="round"
+//     />
+//     <path
+//       d="M7 13H9M11 13H13M15 13H17M7 16H9M11 16H13"
+//       stroke={active ? '#3B9EE8' : '#9CA3AF'}
+//       strokeWidth="1.6"
+//       strokeLinecap="round"
+//     />
+//   </svg>
+// )
+const AddIcon = ({ active }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect
-      x="3"
-      y="4"
-      width="18"
-      height="17"
-      rx="2"
-      stroke={active ? '#3B9EE8' : '#9CA3AF'}
+    <circle
+      cx="12"
+      cy="12"
+      r="9"
+      stroke={active ? "#3B9EE8" : "#9CA3AF"}
       strokeWidth="1.8"
     />
     <path
-      d="M3 9H21"
-      stroke={active ? '#3B9EE8' : '#9CA3AF'}
+      d="M12 8V16"
+      stroke={active ? "#3B9EE8" : "#9CA3AF"}
       strokeWidth="1.8"
       strokeLinecap="round"
     />
     <path
-      d="M8 2V6M16 2V6"
-      stroke={active ? '#3B9EE8' : '#9CA3AF'}
+      d="M8 12H16"
+      stroke={active ? "#3B9EE8" : "#9CA3AF"}
       strokeWidth="1.8"
-      strokeLinecap="round"
-    />
-    <path
-      d="M7 13H9M11 13H13M15 13H17M7 16H9M11 16H13"
-      stroke={active ? '#3B9EE8' : '#9CA3AF'}
-      strokeWidth="1.6"
       strokeLinecap="round"
     />
   </svg>
-)
+);
+
+const RequestIcon = ({ active }) => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect
+      x="4"
+      y="5"
+      width="16"
+      height="14"
+      rx="2"
+      stroke={active ? "#3B9EE8" : "#9CA3AF"}
+      strokeWidth="1.8"
+    />
+    <path
+      d="M8 9H16"
+      stroke={active ? "#3B9EE8" : "#9CA3AF"}
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+    <path
+      d="M8 13H13"
+      stroke={active ? "#3B9EE8" : "#9CA3AF"}
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+  </svg>
+);
 
 const ProfileIcon = ({ active }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -82,18 +131,19 @@ const ProfileIcon = ({ active }) => (
   </svg>
 )
 
-
 const tabs = [
   { id: '/', label: 'Home', Icon: HomeIcon },
   { id: 'services', label: 'Services', Icon: ServicesIcon },
-  { id: 'bookings', label: 'Bookings', Icon: BookingsIcon },
+  // { id: 'Add', label: 'Add', Icon: AddIcon },
+  { id: 'Request', label: 'Request', Icon: RequestIcon },
   { id: 'profile', label: 'Profile', Icon: ProfileIcon },
 ]
 
 
-const MobileFooter = ({ activeTab ,setActiveTab}) => {
 
-// console.log(activeTab)
+const MobileProviderFooter = () => {
+const [activeTab ,setActiveTab] = useState("Home")
+
   return (
     <footer
       className="flex md:hidden"
@@ -154,4 +204,4 @@ const MobileFooter = ({ activeTab ,setActiveTab}) => {
   )
 }
 
-export default MobileFooter
+export default MobileProviderFooter

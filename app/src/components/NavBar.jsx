@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import {  Link} from 'react-router-dom';
+import {  Link, Route} from 'react-router-dom';
+import Services from "../pages/Users/Services/Services";
+import Login from "../pages/Login";
+
+
 
 const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -28,6 +32,9 @@ const NavBar = () => {
     if (!isMobile) setMenuOpen(false);
   }, [isMobile]);
 
+ const User =  localStorage.getItem("userAuth");
+
+  
   return (
     <>
       <nav
@@ -171,6 +178,9 @@ const NavBar = () => {
                 Sign In
               </button>
               </Link>
+            
+            {/* if provider then add route of create service */}
+           <Link to={`${User?.[0].role==="Farmer"?"services":"/"}`}> 
               <button
                 style={{
                   padding: "9px 20px",
@@ -196,6 +206,8 @@ const NavBar = () => {
               >
                 Get Started 🚀
               </button>
+           </Link>
+
             </div>
           )}
 
@@ -340,7 +352,11 @@ const NavBar = () => {
               }} />
 
               {/* Get Started full width */}
+              
+            {/* if provider then add route of create service */}
+           <Link to={`${User?.[0].role==="Farmer"&&"services"}`}> 
               <button
+            
                 style={{
                   width: "100%",
                   padding: "13px",
@@ -357,6 +373,7 @@ const NavBar = () => {
               >
                 Get Started 🚀
               </button>
+              </Link>
             </div>
           </div>
         )}

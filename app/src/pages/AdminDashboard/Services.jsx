@@ -1,53 +1,54 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AdminNavbar from "./Navbar";
-
-const SERVICES = [
-    {
-        id: 2,
-        title: "tractor transport bussiness",
-        category: "WATER TANKER",
-        provider: "Patil_Agro",
-        mobile: "7788334455",
-        price: "₹1",
-        district: "1",
-        status: "ACTIVE",
-        created: "11/2/2026",
-    },
-    {
-        id: 1,
-        title: "drone sprayer",
-        category: "AGRICULTURE EQUIPMENT",
-        provider: "Patil_Agro",
-        mobile: "7788334455",
-        price: "₹2000",
-        district: "12233",
-        status: "ACTIVE",
-        created: "11/2/2026",
-    },
-];
-
-const CATEGORY_COLORS = {
-    "WATER TANKER": { text: "#22d3ee", border: "#22d3ee" },
-    "AGRICULTURE EQUIPMENT": { text: "#4ade80", border: "#4ade80" },
-    ELECTRICAL: { text: "#facc15", border: "#facc15" },
-};
+import AdminContext from "../../AdminContext/CreateAdminContext";
+import { toast, Toaster } from "react-hot-toast";
 
 const Services = () => {
     const [search, setSearch] = useState("");
-    const [services, setServices] = useState(SERVICES);
+    const [services, setServices] = useState([]);
     const [deactivated, setDeactivated] = useState({});
+    const { FetchAllServices } = useContext(AdminContext);
+
+    async function fetAllServices() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Session expired ,Login please");
+            return;
+        }
+        try {
+            const res = await FetchAllServices(token);
+            // console.log("services : ", res);
+            if (res.success) {
+                setServices(res.data);
+                return;
+            } else {
+                toast.error(res.message);
+                return;
+            }
+        } catch (error) {
+            console.log("error while fetching all Services :", error);
+            return;
+        }
+    }
+
+    useEffect(() => {
+        fetAllServices();
+    }, []);
 
     const filtered = services.filter((s) => {
         const q = search.toLowerCase();
-        return (
-            s.title.toLowerCase().includes(q) ||
-            s.provider.toLowerCase().includes(q) ||
-            s.category.toLowerCase().includes(q)
-        );
+        return s?.title.toLowerCase().includes(q);
     });
 
     const toggleDeactivate = (id) => {
         setDeactivated((prev) => ({ ...prev, [id]: !prev[id] }));
+    };
+
+    const DeleteService = (id) => {
+        // alert(id + " delete services");
+        const filterdServices = services.filter((s) => s.id !== id);
+
+        setServices(filterdServices);
     };
 
     return (
@@ -57,6 +58,7 @@ const Services = () => {
                 className="min-h-screen bg-[#0d1117] text-[#c9d1d9] px-6 py-8"
                 style={{ fontFamily: "'DM Sans', sans-serif" }}
             >
+                <Toaster position="top-center" reverseOrder={false} />
                 <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');`}</style>
 
                 {/* Header */}
@@ -65,7 +67,7 @@ const Services = () => {
                         All Services
                     </h1>
                     <p className="text-[13px] text-[#4ade80] mt-1 font-medium">
-                        {filtered.length} services in database
+                        {filtered?.length} services in database
                     </p>
                 </div>
 
@@ -89,14 +91,12 @@ const Services = () => {
                                     {[
                                         "ID",
                                         "TITLE",
-                                        "CATEGORY",
-                                        "PROVIDER",
-                                        "MOBILE",
                                         "PRICE",
                                         "DISTRICT",
                                         "STATUS",
-                                        "CREATED",
+                                        "DATE",
                                         "ACTION",
+                                        "DELETE",
                                     ].map((h) => (
                                         <th
                                             key={h}
@@ -108,7 +108,7 @@ const Services = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filtered.length === 0 ? (
+                                {filtered?.length === 0 ? (
                                     <tr>
                                         <td
                                             colSpan={10}
@@ -119,17 +119,17 @@ const Services = () => {
                                     </tr>
                                 ) : (
                                     filtered.map((s, i) => {
-                                        const catColor = CATEGORY_COLORS[
-                                            s.category
-                                        ] || {
-                                            text: "#8b949e",
-                                            border: "#8b949e",
-                                        };
-                                        const isDeactivated = deactivated[s.id];
+                                        // const catColor = CATEGORY_COLORS[
+                                        //     s.category
+                                        // ] || {
+                                        //     text: "#8b949e",
+                                        //     border: "#8b949e",
+                                        // };
+                                        // const isDeactivated = deactivated[s.id];
 
                                         return (
                                             <tr
-                                                key={s.id}
+                                                key={s?.id}
                                                 className="border-b border-[#21262d] hover:bg-[#1c2128] transition-colors duration-150"
                                                 style={{
                                                     animation: `fadeUp 0.3s ${i * 0.05}s ease both`,
@@ -143,16 +143,19 @@ const Services = () => {
                                                             "'JetBrains Mono', monospace",
                                                     }}
                                                 >
-                                                    #{s.id}
+                                                    #{s?.id}
                                                 </td>
 
                                                 {/* Title */}
                                                 <td className="px-4 py-4 text-[13.5px] font-semibold text-[#e6edf3] capitalize">
-                                                    {s.title}
+                                                    {s?.title}
                                                 </td>
 
+                                                {/* <td className="px-4 py-4 text-[13.5px] font-semibold text-[#e6edf3] capitalize">
+                                                    {s?.description}
+                                                </td> */}
                                                 {/* Category badge */}
-                                                <td className="px-4 py-4">
+                                                {/* <td className="px-4 py-4">
                                                     <span
                                                         className="text-[10px] font-bold px-2.5 py-1 rounded border tracking-[0.05em] whitespace-nowrap"
                                                         style={{
@@ -165,15 +168,15 @@ const Services = () => {
                                                     >
                                                         {s.category}
                                                     </span>
-                                                </td>
+                                                </td> */}
 
                                                 {/* Provider */}
-                                                <td className="px-4 py-4 text-[13px] text-[#c9d1d9]">
+                                                {/* <td className="px-4 py-4 text-[13px] text-[#c9d1d9]">
                                                     {s.provider}
-                                                </td>
+                                                </td> */}
 
                                                 {/* Mobile */}
-                                                <td
+                                                {/* <td
                                                     className="px-4 py-4 text-[12.5px] text-[#8b949e]"
                                                     style={{
                                                         fontFamily:
@@ -181,7 +184,7 @@ const Services = () => {
                                                     }}
                                                 >
                                                     {s.mobile}
-                                                </td>
+                                                </td> */}
 
                                                 {/* Price */}
                                                 <td
@@ -191,7 +194,7 @@ const Services = () => {
                                                             "'JetBrains Mono', monospace",
                                                     }}
                                                 >
-                                                    {s.price}
+                                                    {s?.price}
                                                 </td>
 
                                                 {/* District */}
@@ -202,7 +205,7 @@ const Services = () => {
                                                             "'JetBrains Mono', monospace",
                                                     }}
                                                 >
-                                                    {s.district}
+                                                    {s?.district}
                                                 </td>
 
                                                 {/* Status */}
@@ -210,20 +213,20 @@ const Services = () => {
                                                     <span
                                                         className="text-[11px] font-bold px-2.5 py-1 rounded border tracking-[0.05em]"
                                                         style={{
-                                                            color: isDeactivated
+                                                            color: !s?.isActive
                                                                 ? "#f85149"
                                                                 : "#4ade80",
                                                             borderColor:
-                                                                isDeactivated
+                                                                !s?.isActive
                                                                     ? "#f85149"
                                                                     : "#4ade80",
                                                             background:
                                                                 "transparent",
                                                         }}
                                                     >
-                                                        {isDeactivated
+                                                        {!s?.isActive
                                                             ? "INACTIVE"
-                                                            : s.status}
+                                                            : "Active"}
                                                     </span>
                                                 </td>
 
@@ -235,7 +238,9 @@ const Services = () => {
                                                             "'JetBrains Mono', monospace",
                                                     }}
                                                 >
-                                                    {s.created}
+                                                    {new Date(
+                                                        s?.createdAt,
+                                                    ).toDateString()}
                                                 </td>
 
                                                 {/* Action */}
@@ -243,12 +248,12 @@ const Services = () => {
                                                     <button
                                                         onClick={() =>
                                                             toggleDeactivate(
-                                                                s.id,
+                                                                s?.id,
                                                             )
                                                         }
                                                         className="text-[12px] font-bold px-3 py-1.5 rounded border transition-all duration-150 cursor-pointer"
                                                         style={
-                                                            isDeactivated
+                                                            !s.isActive
                                                                 ? {
                                                                       color: "#4ade80",
                                                                       borderColor:
@@ -266,7 +271,7 @@ const Services = () => {
                                                         }
                                                         onMouseEnter={(e) => {
                                                             e.currentTarget.style.background =
-                                                                isDeactivated
+                                                                !s.isActive
                                                                     ? "#4ade80"
                                                                     : "#f85149";
                                                             e.currentTarget.style.color =
@@ -276,14 +281,24 @@ const Services = () => {
                                                             e.currentTarget.style.background =
                                                                 "transparent";
                                                             e.currentTarget.style.color =
-                                                                isDeactivated
+                                                                !s.isActive
                                                                     ? "#4ade80"
                                                                     : "#f85149";
                                                         }}
                                                     >
-                                                        {isDeactivated
-                                                            ? "Activate"
-                                                            : "Deactivate"}
+                                                        {s.isActive
+                                                            ? "Deactivate"
+                                                            : "Activate"}
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        onClick={(e) =>
+                                                            DeleteService(s.id)
+                                                        }
+                                                        className="bg-red-500 text-black px-3 py-1 rounded-lg cursor-pointer"
+                                                    >
+                                                        delete
                                                     </button>
                                                 </td>
                                             </tr>

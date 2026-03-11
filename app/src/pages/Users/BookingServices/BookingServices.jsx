@@ -68,6 +68,10 @@ const Bookings = () => {
     setSubmitted(true)
     setTimeout(() => setSubmitted(false), 3000)
   }
+   // get UserAuth
+  const User =  JSON.parse(localStorage.getItem("userAuth"));
+  // console.log("profile :",User);
+
 
   return (
     <div style={s.page}>
@@ -219,8 +223,10 @@ const Bookings = () => {
         {/* bottom spacer for fixed footer */}
         <div style={{ height: 80 }} />
       </div>
-
-      <MobileFooter activeTab={activeTab} setActiveTab={setActiveTab} />
+               {/* farmer Footer */}
+    {User?.[0].role==="Farmer"&&( <MobileFooter activeTab={activeTab} setActiveTab={setActiveTab} />)}
+          
+    
     </div>
   )
 }

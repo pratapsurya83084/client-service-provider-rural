@@ -112,6 +112,11 @@ const Services = () => {
         return matchCat && matchSearch;
     });
 
+  // get UserAuth
+  const User =  JSON.parse(localStorage.getItem("userAuth"));
+//   console.log("profile :",User);
+
+
     return (
         <div>
             <div style={styles.pageWrapper}>
@@ -269,7 +274,9 @@ const Services = () => {
                     )}
                 </div>
             </div>
-            <MobileFooter activeTab={activeTab} setActiveTab={setActiveTab} />
+                 {/* farmer Footer */}
+    {User?.[0].role==="Farmer"&&( <MobileFooter activeTab={activeTab} setActiveTab={setActiveTab} />)}
+          
         </div>
     );
 };

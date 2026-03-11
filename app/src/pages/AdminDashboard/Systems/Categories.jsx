@@ -1,60 +1,91 @@
-import React, { useState } from "react";
-
-const INITIAL_CATEGORIES = [
-    {
-        id: 1,
-        name: "Agriculture Equipment",
-        description: "Tractors, harvesters, ploughs and farming tools",
-    },
-    {
-        id: 2,
-        name: "Water Tanker",
-        description: "Water delivery and tanker services",
-    },
-    {
-        id: 3,
-        name: "Electrical Repair",
-        description: "Wiring, motor repair and electrical work",
-    },
-    {
-        id: 4,
-        name: "Construction Help",
-        description: "Masons, laborers and building services",
-    },
-    {
-        id: 5,
-        name: "Plumbing",
-        description: "Pipe fitting, borewell and water supply",
-    },
-    {
-        id: 6,
-        name: "Transport",
-        description: "Goods transport and vehicle hire",
-    },
-];
+import React, { use, useContext, useEffect, useState } from "react";
+import AdminContext from "../../../AdminContext/CreateAdminContext";
+import { toast, Toaster } from "react-hot-toast";
 
 const Categories = () => {
-    const [categories, setCategories] = useState(INITIAL_CATEGORIES);
+    const [categories, setCategories] = useState([]);
     const [name, setName] = useState("");
     const [desc, setDesc] = useState("");
     const [nextId, setNextId] = useState(7);
     const [editingId, setEditingId] = useState(null);
     const [editName, setEditName] = useState("");
     const [editDesc, setEditDesc] = useState("");
+    const {
+        AddCategories,
+        FetchAllCategories,
+        DeleteCategoryById,
+        EditCategoryById,
+    } = useContext(AdminContext);
 
-    const handleAdd = () => {
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        fetchCatgory();
+    }, [editingId]);
+
+    async function fetchCatgory() {
+        if (!token) {
+            toast.error("Unauthorized User ,Please Login");
+            return;
+        }
+        try {
+            const res = await FetchAllCategories(token);
+            // console.log("cat list :",res);
+            if (res.success) {
+                setCategories(res?.category || []);
+                setName("");
+                setDesc("");
+            } else {
+                toast.error("Session is Expired, Login Please");
+                return;
+            }
+        } catch (error) {
+            console.log("error while fetching categories :", error);
+            return;
+        }
+    }
+
+    const handleAdd = async () => {
         if (!name.trim()) return;
-        setCategories((prev) => [
-            ...prev,
-            { id: nextId, name: name.trim(), description: desc.trim() },
-        ]);
-        setNextId((n) => n + 1);
-        setName("");
-        setDesc("");
+
+        if (!token) {
+            toast.error("unauthorized User ,Login please");
+            return;
+        }
+        // console.log(token);
+        try {
+            const res = await AddCategories(token, name, desc);
+            // console.log("response :", res);
+            if (res.success) {
+                toast.success("Category Added Successfull");
+                fetchCatgory();
+                return;
+            }
+        } catch (error) {
+            console.log("error while adding category :", error);
+            return;
+        }
     };
 
-    const handleDelete = (id) =>
-        setCategories((prev) => prev.filter((c) => c.id !== id));
+    const handleDelete = async (id) => {
+        // setCategories((prev) => prev.filter((c) => c.id !== id));
+        if (!token) {
+            toast.error("Unauthorized User ,Please login");
+            return;
+        }
+        try {
+            const res = await DeleteCategoryById(token, id);
+            // console.log("delted category : ", res);
+            if (res.success) {
+                toast.success(res.message);
+                fetchCatgory();
+                return;
+            }
+        } catch (error) {
+            console.log("error while  deleting Category :", error);
+            return;
+        }
+    };
 
     const startEdit = (c) => {
         setEditingId(c.id);
@@ -62,20 +93,28 @@ const Categories = () => {
         setEditDesc(c.description);
     };
 
-    const saveEdit = (id) => {
+    const saveEdit = async (id) => {
         if (!editName.trim()) return;
-        setCategories((prev) =>
-            prev.map((c) =>
-                c.id === id
-                    ? {
-                          ...c,
-                          name: editName.trim(),
-                          description: editDesc.trim(),
-                      }
-                    : c,
-            ),
-        );
-        setEditingId(null);
+
+        if (!token) {
+            toast.error("Token Expired ,Please Login");
+            return;
+        }
+
+        try {
+            const res = await EditCategoryById(token, id, editName, editDesc);
+            // console.log("updates Category :", res);
+            if (res.success) {
+                fetchCatgory();
+                toast.success(res.message);
+                
+            }
+        } catch (error) {
+            console.log("error while updating category :", error);
+            return;
+        }
+
+    
     };
 
     return (
@@ -83,6 +122,7 @@ const Categories = () => {
             className="min-h-screen bg-[#0d1117] text-[#c9d1d9] px-6 py-8"
             style={{ fontFamily: "'DM Sans', sans-serif" }}
         >
+            <Toaster position="top-center" reverseOrder={false} />
             <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
         @keyframes fadeUp {
@@ -104,7 +144,7 @@ const Categories = () => {
         }
         .dark-input::placeholder { color: #484f58; }
         .dark-input:focus { border-color: #4ade80; }
-      `}</style>
+        `}</style>
 
             {/* Header */}
             <div className="mb-6">
@@ -112,7 +152,7 @@ const Categories = () => {
                     Manage Categories
                 </h1>
                 <p className="text-[13px] text-[#4ade80] mt-1 font-medium">
-                    {categories.length} categories
+                    {categories?.length} categories
                 </p>
             </div>
 
@@ -185,7 +225,7 @@ const Categories = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {categories.length === 0 ? (
+                            {categories?.length === 0 ? (
                                 <tr>
                                     <td
                                         colSpan={4}
@@ -195,9 +235,9 @@ const Categories = () => {
                                     </td>
                                 </tr>
                             ) : (
-                                categories.map((c, i) => (
+                                categories?.map((c, i) => (
                                     <tr
-                                        key={c.id}
+                                        key={c?.id}
                                         className="cat-row border-b border-[#21262d] last:border-b-0 hover:bg-[#1c2128] transition-colors duration-150"
                                         style={{
                                             animationDelay: `${i * 0.04}s`,
@@ -211,12 +251,12 @@ const Categories = () => {
                                                     "'JetBrains Mono', monospace",
                                             }}
                                         >
-                                            #{c.id}
+                                            #{c?.id}
                                         </td>
 
                                         {/* Name */}
                                         <td className="px-4 py-4 whitespace-nowrap">
-                                            {editingId === c.id ? (
+                                            {editingId === c?.id ? (
                                                 <input
                                                     className="dark-input"
                                                     value={editName}
@@ -234,7 +274,7 @@ const Categories = () => {
                                                 />
                                             ) : (
                                                 <span className="text-[13.5px] font-semibold text-[#e6edf3]">
-                                                    {c.name}
+                                                    {c?.name}
                                                 </span>
                                             )}
                                         </td>
@@ -252,12 +292,12 @@ const Categories = () => {
                                                     }
                                                     onKeyDown={(e) =>
                                                         e.key === "Enter" &&
-                                                        saveEdit(c.id)
+                                                        saveEdit(c?.id)
                                                     }
                                                 />
                                             ) : (
                                                 <span className="text-[13px] text-[#8b949e]">
-                                                    {c.description || "—"}
+                                                    {c?.description || "—"}
                                                 </span>
                                             )}
                                         </td>
@@ -265,11 +305,11 @@ const Categories = () => {
                                         {/* Actions */}
                                         <td className="px-4 py-4 whitespace-nowrap">
                                             <div className="flex items-center gap-2">
-                                                {editingId === c.id ? (
+                                                {editingId === c?.id ? (
                                                     <>
                                                         <button
                                                             onClick={() =>
-                                                                saveEdit(c.id)
+                                                                saveEdit(c?.id)
                                                             }
                                                             className="text-[12px] font-bold px-3 py-1.5 rounded border border-[#4ade80] text-[#4ade80] bg-transparent hover:bg-[#4ade80] hover:text-[#0d1117] transition-all duration-150 cursor-pointer"
                                                         >
@@ -299,7 +339,7 @@ const Categories = () => {
                                                         <button
                                                             onClick={() =>
                                                                 handleDelete(
-                                                                    c.id,
+                                                                    c?.id,
                                                                 )
                                                             }
                                                             className="text-[12px] font-bold px-3 py-1.5 rounded border border-[#f85149] text-[#f85149] bg-transparent hover:bg-[#f85149] hover:text-[#0d1117] transition-all duration-150 cursor-pointer"

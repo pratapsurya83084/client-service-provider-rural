@@ -10,8 +10,10 @@
 
 // export default Providers
 
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar from "./Navbar";
+import AdminContext from "../../AdminContext/CreateAdminContext";
+import { toast, Toaster } from "react-hot-toast";
 
 const USERS = [
     {
@@ -93,17 +95,44 @@ const ROLE_COLORS = {
 const Providers = () => {
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState("All");
-    const [users, setUsers] = useState(USERS);
+    const [users, SetProviders] = useState([]);
     const [suspended, setSuspended] = useState({});
+    const { FetchAllProviders } = useContext(AdminContext);
 
-    const filtered = users.filter((u) => {
-        const q = search.toLowerCase();
+    async function fetchProviders() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("token expired ,Login Please");
+            return;
+        }
+        try {
+            const res = await FetchAllProviders(token);
+            // console.log(res)
+            if (res.success) {
+                SetProviders(res.providers);
+                // console.log("providers list :", res.providers);
+                return;
+            } else {
+                toast.error(res.message);
+                return;
+            }
+        } catch (error) {
+            console.log("Error while fetching Providers : ", error);
+        }
+    }
+
+    useEffect(() => {
+        fetchProviders();
+    }, []);
+
+    const filtered = users?.filter((u) => {
+        const q = search?.toLowerCase();
         const matchSearch =
-            u.name.toLowerCase().includes(q) ||
-            u.mobile.includes(q) ||
-            u.email.toLowerCase().includes(q);
+            u?.username.toLowerCase().includes(q) ||
+            u?.mobileNumber.includes(q) ||
+            u?.email.toLowerCase().includes(q);
         const matchRole =
-            roleFilter === "All" || u.role === roleFilter.toUpperCase();
+            roleFilter === "All" || u?.role === roleFilter?.toUpperCase();
         return matchSearch && matchRole;
     });
 
@@ -115,6 +144,7 @@ const Providers = () => {
         <div className="w-full">
             {/* navbar */}
             {/* <Navbar /> */}
+            <Toaster position="top-center" reverseOrder={false} />
 
             <div style={s.page}>
                 <style>{`
@@ -256,7 +286,7 @@ const Providers = () => {
 
                 {/* Header */}
                 <div style={s?.header}>
-                    <h1 style={s?.title}>Manage Users</h1>
+                    <h1 style={s?.title}>Manage Providers</h1>
                     <p style={s?.count}>{filtered?.length} users found</p>
                 </div>
 
@@ -303,7 +333,7 @@ const Providers = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filtered.length === 0 ? (
+                                {filtered?.length === 0 ? (
                                     <tr>
                                         <td
                                             colSpan={9}
@@ -317,7 +347,7 @@ const Providers = () => {
                                         </td>
                                     </tr>
                                 ) : (
-                                    filtered.map((u, i) => {
+                                    filtered?.map((u, i) => {
                                         const rc = ROLE_COLORS[u?.role];
                                         const isSuspended = suspended[u?.id];
                                         return (
@@ -343,10 +373,10 @@ const Providers = () => {
                                                         color: "#e6edf3",
                                                     }}
                                                 >
-                                                    {u?.name}
+                                                    {u?.username}
                                                 </td>
                                                 <td className="mono">
-                                                    {u?.mobile}
+                                                    {u?.mobileNumber}
                                                 </td>
                                                 <td className="mono">
                                                     {u?.email || "—"}
@@ -360,41 +390,47 @@ const Providers = () => {
                                                                 rc?.border,
                                                         }}
                                                     >
-                                                        {u.role}
+                                                        {u?.role}
                                                     </span>
                                                 </td>
                                                 <td>
                                                     <span
                                                         className="badge"
                                                         style={{
-                                                            color: isSuspended
-                                                                ? "#f85149"
-                                                                : "#4ade80",
+                                                            color: u?.isApproved
+                                                                ? "#4ade80"
+                                                                : "#f85149",
                                                             borderColor:
-                                                                isSuspended
-                                                                    ? "#f85149"
-                                                                    : "#4ade80",
+                                                                u?.isApproved
+                                                                    ? "#4ade80"
+                                                                    : "#f85149",
                                                         }}
                                                     >
-                                                        {isSuspended
-                                                            ? "SUSPENDED"
-                                                            : u?.status}
+                                                        {u?.isApproved
+                                                            ? "Accept"
+                                                            : "Denied"}
                                                     </span>
                                                 </td>
                                                 <td>
                                                     <span
                                                         className="badge"
                                                         style={{
-                                                            color: "#4ade80",
+                                                            color: u?.isActive
+                                                                ? "#4ade80"
+                                                                : "",
                                                             borderColor:
                                                                 "#4ade80",
                                                         }}
                                                     >
-                                                        YES
+                                                        {u?.isActive
+                                                            ? "Active"
+                                                            : "InActive"}
                                                     </span>
                                                 </td>
                                                 <td className="mono">
-                                                    {u?.joined}
+                                                    {new Date(
+                                                        u?.createdAt,
+                                                    ).toDateString()}
                                                 </td>
                                                 <td>
                                                     {u?.role !== "ADMIN" && (

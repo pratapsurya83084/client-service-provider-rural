@@ -24,29 +24,40 @@ const Signup = () => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async () => {
-        // console.log("Signup Payload:", form);
-        try {
-            const res = await signUp(
-                form.MobileNumber,
-                form.Password,
-                form.Username,
-                form.Role,
-                form.email,
-            );
-            console.log("response register :", res);
-            if (res.success) {
-                toast.success("Registred successFull");
-                setTimeout(() => {
-                    navigate("/login");
-                }, 2000);
-            }
+const handleSubmit = async () => {
+    try {
 
-            // alert("Account created successfully!");
-        } catch (error) {
-            console.log("error while registering user :", error);
+        const res = await signUp(
+            form.MobileNumber,
+            form.Password,
+            form.Username,
+            form.Role,
+            form.email
+        );
+
+        // console.log("response register :", res);
+
+        if (res.success) {
+            toast.success("Registered successfully");
+
+            setTimeout(() => {
+                navigate("/login");
+            }, 2000);
+
+        } else {
+            toast.error(res.message);
         }
-    };
+
+    } catch (error) {
+
+        const message =  "User Already register, please login";
+
+        toast.error(message);
+
+        console.log("Error :", error.response);
+
+    }
+};
 
     const inputStyle = (field) => ({
         width: "100%",
