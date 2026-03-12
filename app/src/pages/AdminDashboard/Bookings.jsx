@@ -82,10 +82,11 @@ const Bookings = () => {
     const [filter, setFilter] = useState("All");
     const [bookings, setBookings] = useState([]);
 
-    const { FetchBookings } = useContext(AdminContext);
+    const { FetchBookings, DeleteBookingsByAdmin } = useContext(AdminContext);
+
+    const token = localStorage.getItem("token");
 
     async function fetchBookings() {
-        const token = localStorage.getItem("token");
         if (!token) {
             toast.error("token expired ,Login Please");
             return;
@@ -96,12 +97,10 @@ const Bookings = () => {
                 setBookings(res.data);
                 // console.log("Bookings list :", res.data);
                 return;
-            }else{
-
+            } else {
                 toast.error(res.message);
                 return;
             }
-
         } catch (error) {
             console.log("Error while fetching Bookings : ", error);
         }
@@ -122,6 +121,26 @@ const Bookings = () => {
             filter === "All" || b.status === filter.toUpperCase();
         return matchSearch && matchFilter;
     });
+
+    const handelDelete = async (bid) => {
+        // alert("booking id : " + bid);
+        if (!token) {
+            toast.error("unauthorized user ,please login as Admin");
+            return;
+        }
+        try {
+            const res = await DeleteBookingsByAdmin(token, bid);
+            if (res.success) {
+                // console.log(res);
+                toast.success(res.message);
+                fetchBookings();
+                return;
+            } else {
+                toast.error(res.message);
+                return;
+            }
+        } catch (error) {}
+    };
 
     return (
         <div
@@ -203,13 +222,13 @@ const Bookings = () => {
                                 {[
                                     "ID",
                                     "SERVICE",
+                                    "DESCRIPTION",
                                     "CUSTOMER",
                                     "MOBILE",
-                                    "PROVIDER",
                                     "DATE",
                                     "STATUS",
                                     "ADDRESS",
-                                    "CREATED",
+                                    "ACTION",
                                 ].map((h) => (
                                     <th
                                         key={h}
@@ -221,7 +240,7 @@ const Bookings = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filtered.length === 0 ? (
+                            {filtered?.length === 0 ? (
                                 <tr>
                                     <td
                                         colSpan={9}
@@ -231,7 +250,7 @@ const Bookings = () => {
                                     </td>
                                 </tr>
                             ) : (
-                                filtered.map((b, i) => {
+                                filtered?.map((b, i) => {
                                     // const st = STATUS_STYLES[b.status] || {
                                     //     color: "#8b949e",
                                     //     border: "#8b949e",
@@ -251,13 +270,13 @@ const Bookings = () => {
                                                         "'JetBrains Mono', monospace",
                                                 }}
                                             >
-                                                #{b?.id}
+                                                #{b?.bookingId}
                                             </td>
                                             <td className="px-4 py-4 text-[13.5px] font-semibold text-[#e6edf3] capitalize">
-                                                {b?.address}
+                                                {b?.title}
                                             </td>
                                             <td className="px-4 py-4 text-[13px] text-[#c9d1d9]">
-                                                {b?.status}
+                                                {b?.description}
                                             </td>
                                             <td
                                                 className="px-4 py-4 text-[12.5px] text-[#8b949e]"
@@ -266,7 +285,7 @@ const Bookings = () => {
                                                         "'JetBrains Mono', monospace",
                                                 }}
                                             >
-                                                {b?.notes}
+                                                {b?.userName}
                                             </td>
                                             {/* <td className="px-4 py-4 text-[13px] text-[#c9d1d9]">
                                               <button>view booking</button>
@@ -278,32 +297,36 @@ const Bookings = () => {
                                                         "'JetBrains Mono', monospace",
                                                 }}
                                             >
-                                                {new Date(b.bookingDate).toDateString()}
+                                                {b?.mobileNumber}
+                                                {/* {new Date(b.bookingDate).toDateString()} */}
                                             </td>
-                                            {/* <td className="px-4 py-4">
-                                                <span
-                                                    className="text-[11px] font-bold px-2.5 py-1 rounded border tracking-[0.05em] whitespace-nowrap"
-                                                    style={{
-                                                        color: st.color,
-                                                        borderColor: st.border,
-                                                        background:
-                                                            "transparent",
-                                                    }}
-                                                >
-                                                    {b.status}
+
+                                            <td className="px-4 py-4">
+                                                <span className="text-[11px] font-bold px-2.5 py-1  whitespace-nowrap">
+                                                    {new Date(
+                                                        b?.date,
+                                                    ).toDateString()}
                                                 </span>
-                                            </td> */}
-                                            <td className="px-4 py-4 text-[12.5px] text-[#8b949e] max-w-[220px]">
-                                                {b.address}
                                             </td>
-                                            <td
-                                                className="px-4 py-4 text-[12.5px] text-[#8b949e]"
-                                                style={{
-                                                    fontFamily:
-                                                        "'JetBrains Mono', monospace",
-                                                }}
-                                            >
-                                                {b.created}
+                                            <td className="px-4 py-4 text-[12.5px] text-[#8b949e] max-w-[220px]">
+                                                {b?.status}
+                                            </td>
+
+                                            <td className="px-4 py-4 text-[12.5px] text-[#8b949e] max-w-[220px]">
+                                                {b?.address}
+                                            </td>
+                                            <td className="px-4 py-4 text-[12.5px] text-[#8b949e] max-w-[220px]">
+                                                <button
+                                                    onClick={(e) =>
+                                                        handelDelete(
+                                                            b?.bookingId,
+                                                        )
+                                                    }
+                                                    className="px-2 py-1 bg-red-500 rounded-lg text-black cursor-pointer"
+                                                >
+                                                    {" "}
+                                                    Delete{" "}
+                                                </button>
                                             </td>
                                         </tr>
                                     );

@@ -5,8 +5,6 @@ import React, { useEffect } from "react";
 import axios from "axios";
 
 const StateUserContext = ({ children }) => {
-
-    
     function isTokenExpired() {
         const expireTime = localStorage.getItem("ExpireTime");
 
@@ -83,12 +81,37 @@ const StateUserContext = ({ children }) => {
         }
     };
 
+    //-------------------------farmer api's function call belows start----------------------------------------------------
+    //booking/farmer-bookings
+    const getFarmerSpecificBookingServices = async (token) => {
+         if (ClearLocalauth()) return;
+        try {
+            const res = await axios.get(
+                `${BACKEND_URL}booking/farmer-bookings`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                },
+            );
+
+            return res.data;
+        } catch (error) {
+            console.log("error while Fetch Bookings :", error);
+        }
+    };
+
+
+
+
     return (
         <UserContext.Provider
             value={{
                 signUp,
                 Login,
                 GetProfile,
+                getFarmerSpecificBookingServices
             }}
         >
             {children}

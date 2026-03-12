@@ -11,6 +11,7 @@ import Services from "./pages/Users/Services/Services";
 import Profile from "./pages/Users/Profile/Profile";
 import FarmerRoute from "./pages/Users/FarmerProtectRoute";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
+import AdminProtectedRoutes from "./pages/AdminDashboard/AdminProtectedRoutes";
 
 const App = () => {
     return (
@@ -27,7 +28,7 @@ const App = () => {
             <Route path="/profile" element={ <FarmerRoute><Profile /> </FarmerRoute> } />
 
             {/* only admin can accessible this route dashboard - yet to be add protect route */}
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<AdminProtectedRoutes> <Dashboard />  </AdminProtectedRoutes>} />
         </Routes>
     );
 };

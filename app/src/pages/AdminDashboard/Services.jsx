@@ -7,10 +7,12 @@ const Services = () => {
     const [search, setSearch] = useState("");
     const [services, setServices] = useState([]);
     const [deactivated, setDeactivated] = useState({});
-    const { FetchAllServices } = useContext(AdminContext);
+    const { FetchAllServices, ServiceStatusUpdateByAdmin,DeleteServiceByAdmin } =
+        useContext(AdminContext);
+
+    const token = localStorage.getItem("token");
 
     async function fetAllServices() {
-        const token = localStorage.getItem("token");
         if (!token) {
             toast.error("Session expired ,Login please");
             return;
@@ -40,15 +42,51 @@ const Services = () => {
         return s?.title.toLowerCase().includes(q);
     });
 
-    const toggleDeactivate = (id) => {
-        setDeactivated((prev) => ({ ...prev, [id]: !prev[id] }));
+    const toggleDeactivate = async (id) => {
+        //here call api for patch method to update  isActive status
+        if (!token) {
+            toast.error("unauthorized Access , Login Please");
+            return;
+        }
+
+        try {
+            const res = await ServiceStatusUpdateByAdmin(token, id);
+
+            if (res.success) {
+                toast.success(res.message);
+                // console.log("status is :", res);
+                fetAllServices();
+                return;
+            } else {
+                toast.error(res.message);
+                return;
+            }
+        } catch (error) {
+            console.log("error while activate or deactivate  status :", error);
+            return;
+        }
     };
 
-    const DeleteService = (id) => {
+    const DeleteService = async(id) => {
         // alert(id + " delete services");
-        const filterdServices = services.filter((s) => s.id !== id);
+       try {
+       
+      const res = await DeleteServiceByAdmin(token,id);
+      if (res.success) {
+          toast.success(res.message);
+          fetAllServices();
+        //   console.log(res);
+            return;
 
-        setServices(filterdServices);
+         }
+         else{
+            toast.error(res.message);
+            return;
+         }
+       } catch (error) {
+        console.log("error while deleting services :",error);
+        return;
+       }
     };
 
     return (
@@ -118,44 +156,46 @@ const Services = () => {
                                         </td>
                                     </tr>
                                 ) : (
-                                    filtered.map((s, i) => {
-                                        // const catColor = CATEGORY_COLORS[
-                                        //     s.category
-                                        // ] || {
-                                        //     text: "#8b949e",
-                                        //     border: "#8b949e",
-                                        // };
-                                        // const isDeactivated = deactivated[s.id];
+                                    filtered
+                                        ?.sort((a, b) => a.id - b.id)
+                                        ?.map((s, i) => {
+                                            // const catColor = CATEGORY_COLORS[
+                                            //     s.category
+                                            // ] || {
+                                            //     text: "#8b949e",
+                                            //     border: "#8b949e",
+                                            // };
+                                            // const isDeactivated = deactivated[s.id];
 
-                                        return (
-                                            <tr
-                                                key={s?.id}
-                                                className="border-b border-[#21262d] hover:bg-[#1c2128] transition-colors duration-150"
-                                                style={{
-                                                    animation: `fadeUp 0.3s ${i * 0.05}s ease both`,
-                                                }}
-                                            >
-                                                {/* ID */}
-                                                <td
-                                                    className="px-4 py-4 text-[13px] font-bold text-[#4ade80]"
+                                            return (
+                                                <tr
+                                                    key={s?.id}
+                                                    className="border-b border-[#21262d] hover:bg-[#1c2128] transition-colors duration-150"
                                                     style={{
-                                                        fontFamily:
-                                                            "'JetBrains Mono', monospace",
+                                                        animation: `fadeUp 0.3s ${i * 0.05}s ease both`,
                                                     }}
                                                 >
-                                                    #{s?.id}
-                                                </td>
+                                                    {/* ID */}
+                                                    <td
+                                                        className="px-4 py-4 text-[13px] font-bold text-[#4ade80]"
+                                                        style={{
+                                                            fontFamily:
+                                                                "'JetBrains Mono', monospace",
+                                                        }}
+                                                    >
+                                                        #{s?.id}
+                                                    </td>
 
-                                                {/* Title */}
-                                                <td className="px-4 py-4 text-[13.5px] font-semibold text-[#e6edf3] capitalize">
-                                                    {s?.title}
-                                                </td>
+                                                    {/* Title */}
+                                                    <td className="px-4 py-4 text-[13.5px] font-semibold text-[#e6edf3] capitalize">
+                                                        {s?.title}
+                                                    </td>
 
-                                                {/* <td className="px-4 py-4 text-[13.5px] font-semibold text-[#e6edf3] capitalize">
+                                                    {/* <td className="px-4 py-4 text-[13.5px] font-semibold text-[#e6edf3] capitalize">
                                                     {s?.description}
                                                 </td> */}
-                                                {/* Category badge */}
-                                                {/* <td className="px-4 py-4">
+                                                    {/* Category badge */}
+                                                    {/* <td className="px-4 py-4">
                                                     <span
                                                         className="text-[10px] font-bold px-2.5 py-1 rounded border tracking-[0.05em] whitespace-nowrap"
                                                         style={{
@@ -170,13 +210,13 @@ const Services = () => {
                                                     </span>
                                                 </td> */}
 
-                                                {/* Provider */}
-                                                {/* <td className="px-4 py-4 text-[13px] text-[#c9d1d9]">
+                                                    {/* Provider */}
+                                                    {/* <td className="px-4 py-4 text-[13px] text-[#c9d1d9]">
                                                     {s.provider}
                                                 </td> */}
 
-                                                {/* Mobile */}
-                                                {/* <td
+                                                    {/* Mobile */}
+                                                    {/* <td
                                                     className="px-4 py-4 text-[12.5px] text-[#8b949e]"
                                                     style={{
                                                         fontFamily:
@@ -186,124 +226,131 @@ const Services = () => {
                                                     {s.mobile}
                                                 </td> */}
 
-                                                {/* Price */}
-                                                <td
-                                                    className="px-4 py-4 text-[13px] font-bold text-[#4ade80]"
-                                                    style={{
-                                                        fontFamily:
-                                                            "'JetBrains Mono', monospace",
-                                                    }}
-                                                >
-                                                    {s?.price}
-                                                </td>
-
-                                                {/* District */}
-                                                <td
-                                                    className="px-4 py-4 text-[13px] text-[#8b949e]"
-                                                    style={{
-                                                        fontFamily:
-                                                            "'JetBrains Mono', monospace",
-                                                    }}
-                                                >
-                                                    {s?.district}
-                                                </td>
-
-                                                {/* Status */}
-                                                <td className="px-4 py-4">
-                                                    <span
-                                                        className="text-[11px] font-bold px-2.5 py-1 rounded border tracking-[0.05em]"
+                                                    {/* Price */}
+                                                    <td
+                                                        className="px-4 py-4 text-[13px] font-bold text-[#4ade80]"
                                                         style={{
-                                                            color: !s?.isActive
-                                                                ? "#f85149"
-                                                                : "#4ade80",
-                                                            borderColor:
-                                                                !s?.isActive
+                                                            fontFamily:
+                                                                "'JetBrains Mono', monospace",
+                                                        }}
+                                                    >
+                                                        {s?.price}
+                                                    </td>
+
+                                                    {/* District */}
+                                                    <td
+                                                        className="px-4 py-4 text-[13px] text-[#8b949e]"
+                                                        style={{
+                                                            fontFamily:
+                                                                "'JetBrains Mono', monospace",
+                                                        }}
+                                                    >
+                                                        {s?.district}
+                                                    </td>
+
+                                                    {/* Status */}
+                                                    <td className="px-4 py-4">
+                                                        <span
+                                                            className="text-[11px] font-bold px-2.5 py-1 rounded border tracking-[0.05em]"
+                                                            style={{
+                                                                color: !s?.isActive
                                                                     ? "#f85149"
                                                                     : "#4ade80",
-                                                            background:
-                                                                "transparent",
-                                                        }}
-                                                    >
-                                                        {!s?.isActive
-                                                            ? "INACTIVE"
-                                                            : "Active"}
-                                                    </span>
-                                                </td>
+                                                                borderColor:
+                                                                    !s?.isActive
+                                                                        ? "#f85149"
+                                                                        : "#4ade80",
+                                                                background:
+                                                                    "transparent",
+                                                            }}
+                                                        >
+                                                            {!s?.isActive
+                                                                ? "INACTIVE"
+                                                                : "Active"}
+                                                        </span>
+                                                    </td>
 
-                                                {/* Created */}
-                                                <td
-                                                    className="px-4 py-4 text-[12.5px] text-[#8b949e]"
-                                                    style={{
-                                                        fontFamily:
-                                                            "'JetBrains Mono', monospace",
-                                                    }}
-                                                >
-                                                    {new Date(
-                                                        s?.createdAt,
-                                                    ).toDateString()}
-                                                </td>
+                                                    {/* Created */}
+                                                    <td
+                                                        className="px-4 py-4 text-[12.5px] text-[#8b949e]"
+                                                        style={{
+                                                            fontFamily:
+                                                                "'JetBrains Mono', monospace",
+                                                        }}
+                                                    >
+                                                        {new Date(
+                                                            s?.createdAt,
+                                                        ).toDateString()}
+                                                    </td>
 
-                                                {/* Action */}
-                                                <td className="px-4 py-4">
-                                                    <button
-                                                        onClick={() =>
-                                                            toggleDeactivate(
-                                                                s?.id,
-                                                            )
-                                                        }
-                                                        className="text-[12px] font-bold px-3 py-1.5 rounded border transition-all duration-150 cursor-pointer"
-                                                        style={
-                                                            !s.isActive
-                                                                ? {
-                                                                      color: "#4ade80",
-                                                                      borderColor:
-                                                                          "#4ade80",
-                                                                      background:
-                                                                          "transparent",
-                                                                  }
-                                                                : {
-                                                                      color: "#f85149",
-                                                                      borderColor:
-                                                                          "#f85149",
-                                                                      background:
-                                                                          "transparent",
-                                                                  }
-                                                        }
-                                                        onMouseEnter={(e) => {
-                                                            e.currentTarget.style.background =
+                                                    {/* Action */}
+                                                    <td className="px-4 py-4">
+                                                        <button
+                                                            onClick={() =>
+                                                                toggleDeactivate(
+                                                                    s?.id,
+                                                                    s?.isActive,
+                                                                )
+                                                            }
+                                                            className="text-[12px] font-bold px-3 py-1.5 rounded border transition-all duration-150 cursor-pointer"
+                                                            style={
                                                                 !s.isActive
-                                                                    ? "#4ade80"
-                                                                    : "#f85149";
-                                                            e.currentTarget.style.color =
-                                                                "#0d1117";
-                                                        }}
-                                                        onMouseLeave={(e) => {
-                                                            e.currentTarget.style.background =
-                                                                "transparent";
-                                                            e.currentTarget.style.color =
-                                                                !s.isActive
-                                                                    ? "#4ade80"
-                                                                    : "#f85149";
-                                                        }}
-                                                    >
-                                                        {s.isActive
-                                                            ? "Deactivate"
-                                                            : "Activate"}
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    <button
-                                                        onClick={(e) =>
-                                                            DeleteService(s.id)
-                                                        }
-                                                        className="bg-red-500 text-black px-3 py-1 rounded-lg cursor-pointer"
-                                                    >
-                                                        delete
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })
+                                                                    ? {
+                                                                          color: "#4ade80",
+                                                                          borderColor:
+                                                                              "#4ade80",
+                                                                          background:
+                                                                              "transparent",
+                                                                      }
+                                                                    : {
+                                                                          color: "#f85149",
+                                                                          borderColor:
+                                                                              "#f85149",
+                                                                          background:
+                                                                              "transparent",
+                                                                      }
+                                                            }
+                                                            onMouseEnter={(
+                                                                e,
+                                                            ) => {
+                                                                e.currentTarget.style.background =
+                                                                    !s.isActive
+                                                                        ? "#4ade80"
+                                                                        : "#f85149";
+                                                                e.currentTarget.style.color =
+                                                                    "#0d1117";
+                                                            }}
+                                                            onMouseLeave={(
+                                                                e,
+                                                            ) => {
+                                                                e.currentTarget.style.background =
+                                                                    "transparent";
+                                                                e.currentTarget.style.color =
+                                                                    !s.isActive
+                                                                        ? "#4ade80"
+                                                                        : "#f85149";
+                                                            }}
+                                                        >
+                                                            {s.isActive
+                                                                ? "Deactivate"
+                                                                : "Activate"}
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            onClick={(e) =>
+                                                                DeleteService(
+                                                                    s.id,
+                                                                )
+                                                            }
+                                                            className="bg-red-500 text-black px-3 py-1 rounded-lg cursor-pointer"
+                                                        >
+                                                            delete
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
                                 )}
                             </tbody>
                         </table>

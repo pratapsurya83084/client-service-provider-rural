@@ -10,7 +10,7 @@ import Footer from '../components/footer/Footer'
 import MobileFooter from '../components/footer/MobileFooter';
 import MobileProviderFooter from '../components/footer/MobileProviderFooter';
 import { UserContext } from '../UserContext/CreateContext'
-
+import { Toaster,toast } from 'react-hot-toast'
 
 
 const Home = () => {

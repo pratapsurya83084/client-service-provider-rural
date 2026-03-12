@@ -1,82 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import AdminContext from "../../AdminContext/CreateAdminContext";
-import {toast ,Toaster} from 'react-hot-toast';
-
-
-
-const USERS = [
-    {
-        id: 7,
-        name: "vivek",
-        mobile: "9309872426",
-        email: "",
-        role: "CUSTOMER",
-        status: "ACTIVE",
-        approved: true,
-        joined: "23/2/2026",
-    },
-    {
-        id: 6,
-        name: "vh",
-        mobile: "2134567890",
-        email: "",
-        role: "CUSTOMER",
-        status: "ACTIVE",
-        approved: true,
-        joined: "12/2/2026",
-    },
-    {
-        id: 5,
-        name: "dronwala",
-        mobile: "7788334455",
-        email: "dronwala@kannect.com",
-        role: "PROVIDER",
-        status: "ACTIVE",
-        approved: true,
-        joined: "11/2/2026",
-    },
-    {
-        id: 4,
-        name: "User",
-        mobile: "8894449993",
-        email: "",
-        role: "CUSTOMER",
-        status: "ACTIVE",
-        approved: true,
-        joined: "11/2/2026",
-    },
-    {
-        id: 3,
-        name: "vk",
-        mobile: "1133224455",
-        email: "",
-        role: "PROVIDER",
-        status: "ACTIVE",
-        approved: true,
-        joined: "11/2/2026",
-    },
-    {
-        id: 2,
-        name: "Test Customer",
-        mobile: "9876543210",
-        email: "",
-        role: "CUSTOMER",
-        status: "ACTIVE",
-        approved: true,
-        joined: "11/2/2026",
-    },
-    {
-        id: 1,
-        name: "System Admin",
-        mobile: "0000000000",
-        email: "admin@kannect.com",
-        role: "ADMIN",
-        status: "ACTIVE",
-        approved: true,
-        joined: "1/1/2026",
-    },
-];
+import { toast, Toaster } from "react-hot-toast";
 
 const ROLE_COLORS = {
     CUSTOMER: { color: "#4ade80", border: "#4ade80" },
@@ -89,43 +14,36 @@ const Users = () => {
     const [roleFilter, setRoleFilter] = useState("All");
     const [users, setUsers] = useState([]);
     const [suspended, setSuspended] = useState({});
-    
-    const { FetchAllUsers } = useContext(AdminContext);
-      
-  
+
+    const { FetchAllUsers, DeleteUsersByAdmin } = useContext(AdminContext);
+
+    const token = localStorage.getItem("token");
 
     //  console.log("token is :",token);
 
-      async function fetchAllUsers() {
-          const token = localStorage.getItem("token");
+    async function fetchAllUsers() {
         if (!token) {
             toast.error("token expired ,Login Please");
             return;
         }
-         try {
-            
-             const res =    await FetchAllUsers(token);
+        try {
+            const res = await FetchAllUsers(token);
             // console.log("user list : " ,res);
             if (res.success) {
                 setUsers(res.data);
                 return;
-            }else{
+            } else {
                 toast.error(res.message);
                 return;
             }
-            
-
         } catch (error) {
-            console.log("error while fetching all Users :",error);
+            console.log("error while fetching all Users :", error);
+        }
+    }
 
-         }
-      }
- 
-      useEffect(()=>{
+    useEffect(() => {
         fetchAllUsers();
-      },[]);
-
-
+    }, []);
 
     const filtered = users?.filter((u) => {
         const q = search?.toLowerCase();
@@ -138,18 +56,36 @@ const Users = () => {
         return matchSearch && matchRole;
     });
 
-    const toggleSuspend = (id) => {
-        setSuspended((prev) => ({ ...prev, [id]: !prev[id] }));
+    const toggleSuspend = async (id) => {
+        // setSuspended((prev) => ({ ...prev, [id]: !prev[id] }));
+        if (!token) {
+            toast.error("Unauthorized Users ,Please login as Admin");
+            return;
+        }
+
+        try {
+            const res = await DeleteUsersByAdmin(token, id);
+
+            if (res.success) {
+                //   console.log(res);
+                  toast.success(res.message);
+                fetchAllUsers();
+                return;
+            } else {
+                toast.error(res.message);
+                return;
+            }
+        } catch (error) {
+            console.log("error while deleting users :", error);
+            return;
+        }
     };
-
-
-
 
     return (
         <div className="w-full">
             {/* navbar */}
             {/* <Navbar /> */}
-          <Toaster position="top-center" reverseOrder={false} />
+            <Toaster position="top-center" reverseOrder={false} />
 
             <div style={s.page}>
                 <style>{`
@@ -328,8 +264,8 @@ const Users = () => {
                                         "MOBILE",
                                         "EMAIL",
                                         "ROLE",
-                                        "STATUS",
-                                        "APPROVED",
+                                        // "STATUS",
+                                        // "APPROVED",
                                         "JOINED",
                                         "ACTIONS",
                                     ].map((h) => (
@@ -390,15 +326,26 @@ const Users = () => {
                                                     <span
                                                         className="badge"
                                                         style={{
-                                                            color: u?.role=="Provider"?"#facc15":"#4ade80",
-                                                            borderColor:"#60a5fa" ,
+                                                            color:
+                                                                u?.role ===
+                                                                "Provider"
+                                                                    ? "#facc15"
+                                                                    : u?.role ===
+                                                                        "Admin"
+                                                                      ? "#4ade80"
+                                                                      : u?.role ===
+                                                                          "Farmer"
+                                                                        ? "#60a5fa"
+                                                                        : "#000",
+                                                            borderColor:
+                                                                "#60a5fa",
                                                         }}
                                                     >
                                                         {u?.role}
                                                     </span>
                                                 </td>
-                                             
-                                                <td>
+
+                                                {/* <td>
                                                     <span
                                                         className="badge"
                                                         style={{
@@ -415,10 +362,9 @@ const Users = () => {
                                                             ? "Active"
                                                             : "Suspend"}
                                                     </span>
-                                                </td>
+                                                </td> */}
 
-
-                                                <td>
+                                                {/* <td>
                                                     <span
                                                         className="badge"
                                                         style={{
@@ -429,9 +375,11 @@ const Users = () => {
                                                     >
                                                         {u?.isApproved?"Active":"Denied"}
                                                     </span>
-                                                </td>
+                                                </td> */}
                                                 <td className="mono">
-                                                    {new Date(u?.createdAt).toDateString()}
+                                                    {new Date(
+                                                        u?.createdAt,
+                                                    ).toDateString()}
                                                 </td>
                                                 <td>
                                                     {u.role !== "ADMIN" && (
@@ -443,9 +391,10 @@ const Users = () => {
                                                                 )
                                                             }
                                                         >
-                                                            {isSuspended
+                                                            {/* {isSuspended
                                                                 ? "Restore"
-                                                                : "Suspend"}
+                                                                : "Suspend"} */}
+                                                            Delete{" "}
                                                         </button>
                                                     )}
                                                 </td>

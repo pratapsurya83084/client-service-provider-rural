@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 
 import DashBoardOverview from "../../pages/AdminDashboard/DashBoardOverview";
 import Users from "../../pages/AdminDashboard/Users";
@@ -8,12 +8,16 @@ import Bookings from "../../pages/AdminDashboard/Bookings";
 import Categories from "../../pages/AdminDashboard/Systems/Categories";
 import Advertisements from "../../pages/AdminDashboard/Systems/Advertisements";
 import SystemLogs from "../../pages/AdminDashboard/Systems/SystemLogs";
+import toast from "react-hot-toast";
+import {useNavigate} from 'react-router-dom';
 
 const LeftSidebar = () => {
     const [active, setActive] = useState("Dashboard");
     const [collapsed, setCollapsed] = useState(false);
-
-    useEffect(() => {
+   const navigate = useNavigate();
+   
+   
+   useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth <= 768) {
                 setCollapsed(true); // collapse on mobile
@@ -181,6 +185,19 @@ const LeftSidebar = () => {
             ],
         },
     ];
+
+
+
+ 
+    // LogoutAdmin
+    const LogoutAdmin = ()=>{
+        localStorage.clear();
+      toast.success("logout success");
+      navigate("/login");
+      return;
+    }
+
+
 
     return (
         <div
@@ -504,6 +521,7 @@ const LeftSidebar = () => {
                     }}
                 >
                     <button
+                    onClick={LogoutAdmin}
                         style={{
                             width: "100%",
                             display: "flex",

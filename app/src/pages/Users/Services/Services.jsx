@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import MobileFooter from "../../../components/footer/MobileFooter";
+import AdminContext from "../../../AdminContext/CreateAdminContext";
+import { toast } from "react-hot-toast";
 
 const services = [
     {
@@ -26,37 +28,6 @@ const services = [
         provider: "agritech",
         price: "₹500",
     },
-    {
-        id: 4,
-        name: "water pump rental",
-        category: "Water Tanker",
-        code: "88210",
-        provider: "waterpro",
-        price: "₹750",
-    },
-    {
-        id: 5,
-        name: "electric fence setup",
-        category: "Electrical",
-        code: "44501",
-        provider: "voltfarm",
-        price: "₹3200",
-    },
-    {
-        id: 6,
-        name: "seed broadcaster",
-        category: "Agriculture Equipment",
-        code: "99123",
-        provider: "agritech",
-        price: "₹1200",
-    },
-];
-
-const categories = [
-    "All",
-    "Agriculture Equipment",
-    "Water Tanker",
-    "Electrical",
 ];
 
 const SearchIcon = () => (
@@ -78,7 +49,6 @@ const ChevronLeft = () => (
             stroke="#6B7280"
             strokeWidth="2"
             strokeLinecap="round"
-            strokeLinejoin="round"
         />
     </svg>
 );
@@ -90,174 +60,172 @@ const ChevronRight = () => (
             stroke="#6B7280"
             strokeWidth="2"
             strokeLinecap="round"
-            strokeLinejoin="round"
         />
     </svg>
 );
 
 const Services = () => {
-
     const [activeTab, setActiveTab] = useState("services");
-    
     const [activeCategory, setActiveCategory] = useState("All");
     const [search, setSearch] = useState("");
+    const [Categories, setCategories] = useState([]);
+
+    const { FetchAllCategories } = useContext(AdminContext);
+
+    const token = localStorage.getItem("token");
+    const User = JSON.parse(localStorage.getItem("userAuth"));
+
+    async function fetchCatgory() {
+        if (!token) {
+            toast.error("Unauthorized User ,Please Login");
+            return;
+        }
+
+        try {
+            const res = await FetchAllCategories(token);
+
+            if (res.success) {
+                const cats = [{ id: 0, name: "All" }, ...(res.category || [])];
+
+                setCategories(cats);
+            } else {
+                toast.error(res.message);
+            }
+        } catch (error) {
+            console.log("error while fetching categories :", error);
+        }
+    }
+
+    useEffect(() => {
+        fetchCatgory();
+    }, []);
 
     const filtered = services.filter((s) => {
         const matchCat =
             activeCategory === "All" || s.category === activeCategory;
+
         const matchSearch =
             s.name.toLowerCase().includes(search.toLowerCase()) ||
             s.category.toLowerCase().includes(search.toLowerCase()) ||
             s.provider.toLowerCase().includes(search.toLowerCase());
+
         return matchCat && matchSearch;
     });
-
-  // get UserAuth
-  const User =  JSON.parse(localStorage.getItem("userAuth"));
-//   console.log("profile :",User);
-
 
     return (
         <div>
             <div style={styles.pageWrapper}>
                 <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+                @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+                *{box-sizing:border-box;margin:0;padding:0;}
 
-        .service-card {
-          background: #fff;
-          border-radius: 14px;
-          padding: 16px 18px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-          transition: box-shadow 0.18s ease, transform 0.18s ease;
-          cursor: pointer;
-          animation: fadeUp 0.35s ease both;
-        }
-        .service-card:hover {
-          box-shadow: 0 4px 16px rgba(59,158,232,0.13);
-          transform: translateY(-2px);
-        }
+                .service-card{
+                  background:#fff;
+                  border-radius:14px;
+                  padding:16px 18px;
+                  display:flex;
+                  align-items:center;
+                  justify-content:space-between;
+                  box-shadow:0 1px 4px rgba(0,0,0,0.06);
+                  transition:.18s;
+                  cursor:pointer;
+                }
 
-        .cat-btn {
-          border: none;
-          border-radius: 20px;
-          padding: 7px 16px;
-          font-size: 13px;
-          font-family: 'DM Sans', sans-serif;
-          font-weight: 500;
-          cursor: pointer;
-          white-space: nowrap;
-          transition: background 0.15s, color 0.15s;
-        }
-        .cat-btn.active {
-          background: #3B9EE8;
-          color: #fff;
-        }
-        .cat-btn.inactive {
-          background: #fff;
-          color: #374151;
-        }
-        .cat-btn.inactive:hover {
-          background: #E8F4FD;
-          color: #3B9EE8;
-        }
+                .service-card:hover{
+                  box-shadow:0 4px 16px rgba(59,158,232,0.13);
+                  transform:translateY(-2px);
+                }
 
-        .search-input {
-          flex: 1;
-          border: none;
-          outline: none;
-          background: transparent;
-          font-size: 14px;
-          font-family: 'DM Sans', sans-serif;
-          color: #374151;
-        }
-        .search-input::placeholder { color: #9CA3AF; }
+                .cat-btn{
+                  border:none;
+                  border-radius:20px;
+                  padding:7px 16px;
+                  font-size:13px;
+                  font-family:'DM Sans';
+                  font-weight:500;
+                  cursor:pointer;
+                  white-space:nowrap;
+                }
 
-        .scroll-cats {
-          display: flex;
-          gap: 8px;
-          overflow-x: auto;
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-        }
-        .scroll-cats::-webkit-scrollbar { display: none; }
+                .cat-btn.active{
+                  background:#3B9EE8;
+                  color:#fff;
+                }
 
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(12px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
+                .cat-btn.inactive{
+                  background:#fff;
+                  color:#374151;
+                }
 
-        .cards-grid {
-          display: grid;
-          gap: 10px;
-          grid-template-columns: 1fr;
-        }
+                .scroll-cats{
+                  display:flex;
+                  gap:8px;
+                  overflow-x:auto;
+                }
 
-        @media (min-width: 640px) {
-          .cards-grid { grid-template-columns: 1fr 1fr; }
-        }
-        @media (min-width: 1024px) {
-          .cards-grid { grid-template-columns: 1fr 1fr 1fr; }
-        }
-      `}</style>
+                .cards-grid{
+                  display:grid;
+                  gap:10px;
+                  grid-template-columns:1fr;
+                }
+
+                @media (min-width:640px){
+                  .cards-grid{grid-template-columns:1fr 1fr;}
+                }
+
+                @media (min-width:1024px){
+                  .cards-grid{grid-template-columns:1fr 1fr 1fr;}
+                }
+
+                `}</style>
 
                 <div style={styles.container}>
-                    {/* Header */}
                     <div style={styles.header}>
                         <h1 style={styles.title}>Services</h1>
                         <p style={styles.subtitle}>Find the help you need</p>
                     </div>
 
-                    {/* Search */}
                     <div style={styles.searchBar}>
                         <SearchIcon />
                         <input
-                            className="search-input"
+                            className="search-input  rounded-full px-3 py-1 w-full border border-gray-200 focus:border-gray-300 focus:outline-none"
                             placeholder="Search services..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
 
-                    {/* Category Filter */}
                     <div style={styles.catRow}>
                         <button style={styles.navBtn}>
                             <ChevronLeft />
                         </button>
+
                         <div className="scroll-cats">
-                            {categories.map((cat) => (
+                            {Categories?.map((cat) => (
                                 <button
-                                    key={cat}
-                                    className={`cat-btn ${activeCategory === cat ? "active" : "inactive"}`}
-                                    onClick={() => setActiveCategory(cat)}
+                                    key={cat.id}
+                                    className={`cat-btn ${activeCategory === cat.name ? "active" : "inactive"}`}
+                                    onClick={() => setActiveCategory(cat.name)}
                                 >
-                                    {cat}
+                                    {cat.name}
                                 </button>
                             ))}
                         </div>
+
                         <button style={styles.navBtn}>
                             <ChevronRight />
                         </button>
                     </div>
 
-                    {/* Divider */}
                     <div style={styles.divider} />
 
-                    {/* Cards */}
                     {filtered.length === 0 ? (
                         <div style={styles.empty}>No services found.</div>
                     ) : (
                         <div className="cards-grid">
-                            {filtered.map((s, i) => (
-                                <div
-                                    className="service-card"
-                                    key={s.id}
-                                    style={{ animationDelay: `${i * 0.06}s` }}
-                                >
+                            {filtered.map((s) => (
+                                <div className="service-card" key={s.id}>
                                     <div>
                                         <p style={styles.cardName}>{s.name}</p>
                                         <p style={styles.cardMeta}>
@@ -267,6 +235,7 @@ const Services = () => {
                                             by {s.provider}
                                         </p>
                                     </div>
+
                                     <span style={styles.price}>{s.price}</span>
                                 </div>
                             ))}
@@ -274,9 +243,13 @@ const Services = () => {
                     )}
                 </div>
             </div>
-                 {/* farmer Footer */}
-    {User?.[0].role==="Farmer"&&( <MobileFooter activeTab={activeTab} setActiveTab={setActiveTab} />)}
-          
+
+            {User?.[0]?.role === "Farmer" && (
+                <MobileFooter
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                />
+            )}
         </div>
     );
 };

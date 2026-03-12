@@ -36,7 +36,7 @@ const Categories = () => {
                 setName("");
                 setDesc("");
             } else {
-                toast.error("Session is Expired, Login Please");
+                toast.error(res.message);
                 return;
             }
         } catch (error) {

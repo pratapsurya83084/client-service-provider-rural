@@ -158,7 +158,7 @@ const AdminState = ({ children }) => {
 
             return res.data;
         } catch (error) {
-            console.log("error while fetching users :", error);
+            console.log("error while delete category :", error);
         }
     };
 
@@ -179,10 +179,90 @@ const AdminState = ({ children }) => {
 
             return res.data;
         } catch (error) {
-            console.log("error while fetching users :", error);
+            console.log("error while edit category :", error);
         }
     };
       
+    //service-provider/ServicestatusUpdateByAdmin/1
+       const ServiceStatusUpdateByAdmin = async (token,sid) => {
+        if (ClearLocalauth()) return;
+        try {
+            const res = await axios.patch(
+                `${BACKEND_URL}service-provider/ServicestatusUpdateByAdmin/${sid}`, {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                },
+            );
+
+            return res.data;
+        } catch (error) {
+            console.log("error while activate or deactivate service :", error);
+        }
+    };
+
+
+//delete service by admin - service-provider/deleteService/1
+ const DeleteServiceByAdmin = async (token,id) => {
+        if (ClearLocalauth()) return;
+        try {
+            const res = await axios.delete(
+                `${BACKEND_URL}service-provider/deleteService/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                },
+            );
+
+            return res.data;
+        } catch (error) {
+            console.log("error while deleting  service :", error);
+        }
+    };
+
+    //delete booking by admin - booking/admin/delete-booking/1
+     const DeleteBookingsByAdmin = async (token,id) => {
+        if (ClearLocalauth()) return;
+        try {
+            const res = await axios.delete(
+                `${BACKEND_URL}booking/admin/delete-booking/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                },
+            );
+
+            return res.data;
+        } catch (error) {
+            console.log("error while deleting  service :", error);
+        }
+    };
+    //user deletion by admin - users/deleteUser/5
+     const DeleteUsersByAdmin = async (token,id) => {
+        if (ClearLocalauth()) return;
+        try {
+            const res = await axios.delete(
+                `${BACKEND_URL}users/deleteUser/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                },
+            );
+
+            return res.data;
+        } catch (error) {
+            console.log("error while deleting  Users :", error);
+        }
+    };
+
     return (
         <AdminContext.Provider
             value={{
@@ -193,7 +273,11 @@ const AdminState = ({ children }) => {
                 AddCategories,
                 FetchAllCategories,
                 DeleteCategoryById,
-                EditCategoryById
+                EditCategoryById,
+                ServiceStatusUpdateByAdmin,
+                DeleteServiceByAdmin,
+                DeleteBookingsByAdmin,
+                DeleteUsersByAdmin
             }}
         >
             {children}
