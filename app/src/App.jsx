@@ -12,6 +12,11 @@ import Profile from "./pages/Users/Profile/Profile";
 import FarmerRoute from "./pages/Users/FarmerProtectRoute";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import AdminProtectedRoutes from "./pages/AdminDashboard/AdminProtectedRoutes";
+import MyServices from "./pages/Provider/MyServices/MyServices";
+import AddServices from "./pages/Provider/AddServices/AddServices";
+import Requests from "./pages/Provider/UserRequestForBookings/Requests";
+import ProviderProfile from "./pages/Provider/ProviderProfile/ProviderProfile";
+import ProviderProtectedRoutes from "./pages/Provider/ProviderProtectedRoutes";
 
 const App = () => {
     return (
@@ -20,15 +25,23 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Signup />} />
             <Route path="/unauthorized" element={<UnauthorizedPage />} />
+           {/* only admin can accessible this route dashboard - yet to be add protect route */}
+            <Route path="/dashboard" element={<AdminProtectedRoutes> <Dashboard />  </AdminProtectedRoutes>} />
 
+            
             {/* mobilefooter  should be show below this route page */}
             {/* user routes */}
             <Route path="/services" element={<FarmerRoute> <Services /> </FarmerRoute>} />
             <Route path="/bookings" element={ <FarmerRoute> <BookingServices /> </FarmerRoute> } />
             <Route path="/profile" element={ <FarmerRoute><Profile /> </FarmerRoute> } />
 
-            {/* only admin can accessible this route dashboard - yet to be add protect route */}
-            <Route path="/dashboard" element={<AdminProtectedRoutes> <Dashboard />  </AdminProtectedRoutes>} />
+
+           {/* Only Provider Can Accessible this routes */}
+           <Route path="/MyServices" element={ <ProviderProtectedRoutes> <MyServices/> </ProviderProtectedRoutes> } />  
+           <Route path="/AddServiceByProvider" element={<ProviderProtectedRoutes> <AddServices/> </ProviderProtectedRoutes> } />  
+           <Route path="/UserRequesToProviderForbooking" element={  <ProviderProtectedRoutes>  <Requests/>  </ProviderProtectedRoutes> } />  
+           <Route path="/ProviderProfile" element={ <ProviderProtectedRoutes>  <ProviderProfile/> </ProviderProtectedRoutes>  } />  
+         
         </Routes>
     );
 };

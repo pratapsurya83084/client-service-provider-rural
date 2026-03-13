@@ -2,171 +2,57 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const HomeIcon = ({ active }) => (
-    <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            d="M3 9.5L12 3L21 9.5V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V9.5Z"
-            fill={active ? "#3B9EE8" : "none"}
-            stroke={active ? "#3B9EE8" : "#9CA3AF"}
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-    </svg>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M3 9.5L12 3L21 9.5V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V9.5Z"
+      fill={active ? "#3B9EE8" : "none"}
+      stroke={active ? "#3B9EE8" : "#9CA3AF"}
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
 );
 
 const ServicesIcon = ({ active }) => (
-    <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <circle
-            cx="11"
-            cy="11"
-            r="7.5"
-            stroke={active ? "#3B9EE8" : "#9CA3AF"}
-            strokeWidth="1.8"
-        />
-        <path
-            d="M17 17L21 21"
-            stroke={active ? "#3B9EE8" : "#9CA3AF"}
-            strokeWidth="1.8"
-            strokeLinecap="round"
-        />
-    </svg>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="4" y="5" width="3" height="3" rx="1" fill={active ? "#3B9EE8" : "#9CA3AF"} />
+    <path d="M10 6.5H20" stroke={active ? "#3B9EE8" : "#9CA3AF"} strokeWidth="1.8" strokeLinecap="round" />
+    <rect x="4" y="10.5" width="3" height="3" rx="1" fill={active ? "#3B9EE8" : "#9CA3AF"} />
+    <path d="M10 12H20" stroke={active ? "#3B9EE8" : "#9CA3AF"} strokeWidth="1.8" strokeLinecap="round" />
+    <rect x="4" y="16" width="3" height="3" rx="1" fill={active ? "#3B9EE8" : "#9CA3AF"} />
+    <path d="M10 17.5H20" stroke={active ? "#3B9EE8" : "#9CA3AF"} strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
 );
 
-// const BookingsIcon = ({ active }) => (
-//   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-//     <rect
-//       x="3"
-//       y="4"
-//       width="18"
-//       height="17"
-//       rx="2"
-//       stroke={active ? '#3B9EE8' : '#9CA3AF'}
-//       strokeWidth="1.8"
-//     />
-//     <path
-//       d="M3 9H21"
-//       stroke={active ? '#3B9EE8' : '#9CA3AF'}
-//       strokeWidth="1.8"
-//       strokeLinecap="round"
-//     />
-//     <path
-//       d="M8 2V6M16 2V6"
-//       stroke={active ? '#3B9EE8' : '#9CA3AF'}
-//       strokeWidth="1.8"
-//       strokeLinecap="round"
-//     />
-//     <path
-//       d="M7 13H9M11 13H13M15 13H17M7 16H9M11 16H13"
-//       stroke={active ? '#3B9EE8' : '#9CA3AF'}
-//       strokeWidth="1.6"
-//       strokeLinecap="round"
-//     />
-//   </svg>
-// )
 const AddIcon = ({ active }) => (
-    <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <circle
-            cx="12"
-            cy="12"
-            r="9"
-            stroke={active ? "#3B9EE8" : "#9CA3AF"}
-            strokeWidth="1.8"
-        />
-        <path
-            d="M12 8V16"
-            stroke={active ? "#3B9EE8" : "#9CA3AF"}
-            strokeWidth="1.8"
-            strokeLinecap="round"
-        />
-        <path
-            d="M8 12H16"
-            stroke={active ? "#3B9EE8" : "#9CA3AF"}
-            strokeWidth="1.8"
-            strokeLinecap="round"
-        />
-    </svg>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 5V19" stroke={active ? "#3B9EE8" : "#9CA3AF"} strokeWidth="1.8" strokeLinecap="round" />
+    <path d="M5 12H19" stroke={active ? "#3B9EE8" : "#9CA3AF"} strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
 );
 
 const RequestIcon = ({ active }) => (
-    <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <rect
-            x="4"
-            y="5"
-            width="16"
-            height="14"
-            rx="2"
-            stroke={active ? "#3B9EE8" : "#9CA3AF"}
-            strokeWidth="1.8"
-        />
-        <path
-            d="M8 9H16"
-            stroke={active ? "#3B9EE8" : "#9CA3AF"}
-            strokeWidth="1.8"
-            strokeLinecap="round"
-        />
-        <path
-            d="M8 13H13"
-            stroke={active ? "#3B9EE8" : "#9CA3AF"}
-            strokeWidth="1.8"
-            strokeLinecap="round"
-        />
-    </svg>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 4V15" stroke={active ? "#3B9EE8" : "#9CA3AF"} strokeWidth="1.8" strokeLinecap="round" />
+    <path d="M8 11L12 15L16 11" stroke={active ? "#3B9EE8" : "#9CA3AF"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M4 19H20" stroke={active ? "#3B9EE8" : "#9CA3AF"} strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
 );
 
 const ProfileIcon = ({ active }) => (
-    <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <circle
-            cx="12"
-            cy="8"
-            r="3.5"
-            stroke={active ? "#3B9EE8" : "#9CA3AF"}
-            strokeWidth="1.8"
-        />
-        <path
-            d="M4 20C4 16.6863 7.58172 14 12 14C16.4183 14 20 16.6863 20 20"
-            stroke={active ? "#3B9EE8" : "#9CA3AF"}
-            strokeWidth="1.8"
-            strokeLinecap="round"
-        />
-    </svg>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="8" r="3.5" stroke={active ? "#3B9EE8" : "#9CA3AF"} strokeWidth="1.8" />
+    <path d="M4 20C4 16.6863 7.58172 14 12 14C16.4183 14 20 16.6863 20 20" stroke={active ? "#3B9EE8" : "#9CA3AF"} strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
 );
 
 const tabs = [
     { id: "/", label: "Home", Icon: HomeIcon },
-    { id: "services", label: "Services", Icon: ServicesIcon },
-    // { id: 'Add', label: 'Add', Icon: AddIcon },
-    { id: "Request", label: "Request", Icon: RequestIcon },
-    { id: "profile", label: "Profile", Icon: ProfileIcon },
+    { id: "MyServices", label: "Services", Icon: ServicesIcon },
+    { id: 'AddServiceByProvider', label: 'Add', Icon: AddIcon },
+    { id: "UserRequesToProviderForbooking", label: "Request", Icon: RequestIcon },
+    { id: "ProviderProfile", label: "Profile", Icon: ProfileIcon },
 ];
 
 const MobileProviderFooter = () => {

@@ -59,7 +59,7 @@ const StateUserContext = ({ children }) => {
             );
             return res.data;
         } catch (error) {
-            console.log("error while register user :", error);
+            console.log("error while login user :", error);
         }
     };
 
@@ -77,14 +77,14 @@ const StateUserContext = ({ children }) => {
 
             return res.data;
         } catch (error) {
-            console.log("error while register user :", error);
+            console.log("error while get profile user :", error);
         }
     };
 
     //-------------------------farmer api's function call belows start----------------------------------------------------
     //booking/farmer-bookings
     const getFarmerSpecificBookingServices = async (token) => {
-         if (ClearLocalauth()) return;
+        if (ClearLocalauth()) return;
         try {
             const res = await axios.get(
                 `${BACKEND_URL}booking/farmer-bookings`,
@@ -98,12 +98,76 @@ const StateUserContext = ({ children }) => {
 
             return res.data;
         } catch (error) {
-            console.log("error while Fetch Bookings :", error);
+            console.log("error while Fetch farmer Bookings :", error);
         }
     };
 
+    // getAllservices - service-provider/getAllServices
+    const GetAllServices = async (token) => {
+        if (ClearLocalauth()) return;
+        try {
+            const res = await axios.get(
+                `${BACKEND_URL}service-provider/getAllServices`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                },
+            );
 
+            return res.data;
+        } catch (error) {
+            console.log("error while Fetch farmer Bookings :", error);
+        }
+    };
 
+    //provider specific fetch service - service-provider/get-provider-specific-service
+    const GetProviderSpecificServices = async (token) => {
+        if (ClearLocalauth()) return;
+        try {
+            const res = await axios.get(
+                `${BACKEND_URL}service-provider/get-provider-specific-service`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                },
+            );
+
+            return res.data;
+        } catch (error) {
+            console.log("error while Fetch provider service :", error);
+        }
+    };
+
+    //add service - only provider can add service - service-provider/add
+    const AddService = async (
+        token,
+        title,
+        category,
+        price,
+        district,
+        description,
+    ) => {
+        try {
+            const res = await axios.post(
+                `${BACKEND_URL}service-provider/add`,
+                { title, category, price, district, description },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization":`Bearer ${token}`
+                    },
+                    withCredentials:true
+                },
+            );
+            return res.data;
+        } catch (error) {
+            console.log("error while adding service :", error);
+        }
+    };
 
     return (
         <UserContext.Provider
@@ -111,7 +175,10 @@ const StateUserContext = ({ children }) => {
                 signUp,
                 Login,
                 GetProfile,
-                getFarmerSpecificBookingServices
+                getFarmerSpecificBookingServices,
+                GetAllServices,
+                GetProviderSpecificServices,
+                AddService
             }}
         >
             {children}

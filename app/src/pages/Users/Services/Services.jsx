@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import MobileFooter from "../../../components/footer/MobileFooter";
 import AdminContext from "../../../AdminContext/CreateAdminContext";
 import { toast } from "react-hot-toast";
+import { UserContext } from "../../../UserContext/CreateContext";
 
 const services = [
     {
@@ -69,8 +70,10 @@ const Services = () => {
     const [activeCategory, setActiveCategory] = useState("All");
     const [search, setSearch] = useState("");
     const [Categories, setCategories] = useState([]);
+    const [services, setServices] = useState([]);
 
     const { FetchAllCategories } = useContext(AdminContext);
+    const { GetAllServices } = useContext(UserContext);
 
     const token = localStorage.getItem("token");
     const User = JSON.parse(localStorage.getItem("userAuth"));
@@ -96,18 +99,41 @@ const Services = () => {
         }
     }
 
+    //  GetAllServices
+    async function fetchGetAllServices() {
+        if (!token) {
+            toast.error("Unauthorized User ,Please Login");
+            return;
+        }
+
+        try {
+            const res = await GetAllServices(token);
+
+            if (res.success) {
+                // console.log(res.data);
+                setServices(res.data);
+            } else {
+                toast.error(res.message);
+            }
+        } catch (error) {
+            console.log("error while fetching categories :", error);
+        }
+    }
+
     useEffect(() => {
+        fetchGetAllServices();
         fetchCatgory();
     }, []);
 
     const filtered = services.filter((s) => {
         const matchCat =
-            activeCategory === "All" || s.category === activeCategory;
+            activeCategory === "All" ||
+            s.category === activeCategory ||
+            s.district === activeCategory;
 
         const matchSearch =
-            s.name.toLowerCase().includes(search.toLowerCase()) ||
-            s.category.toLowerCase().includes(search.toLowerCase()) ||
-            s.provider.toLowerCase().includes(search.toLowerCase());
+            s.title.toLowerCase().includes(search.toLowerCase()) ||
+            s.description.toLowerCase().includes(search.toLowerCase());
 
         return matchCat && matchSearch;
     });
@@ -227,16 +253,26 @@ const Services = () => {
                             {filtered.map((s) => (
                                 <div className="service-card" key={s.id}>
                                     <div>
-                                        <p style={styles.cardName}>{s.name}</p>
+                                        <p style={styles.cardName}>
+                                            {s?.title}
+                                        </p>
                                         <p style={styles.cardMeta}>
-                                            {s.category} · {s.code}
+                                            {s?.district}
+                                        </p>
+                                        <p style={styles.cardMeta}>
+                                            {s?.category}
                                         </p>
                                         <p style={styles.cardProvider}>
-                                            by {s.provider}
+                                            by {s?.providerName}
+                                        </p>
+                                        <p className="text-sm text-gray-500">
+                                            {s?.description}
                                         </p>
                                     </div>
 
-                                    <span style={styles.price}>{s.price}</span>
+                                    <span style={styles.price}>
+                                        ₹. {s?.price}
+                                    </span>
                                 </div>
                             ))}
                         </div>

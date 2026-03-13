@@ -41,6 +41,7 @@ const Services = () => {
         const q = search.toLowerCase();
         return s?.title.toLowerCase().includes(q);
     });
+    // console.log(filtered)
 
     const toggleDeactivate = async (id) => {
         //here call api for patch method to update  isActive status
@@ -279,7 +280,7 @@ const Services = () => {
                                                         }}
                                                     >
                                                         {new Date(
-                                                            s?.createdAt,
+                                                            s.createdAt,
                                                         ).toDateString()}
                                                     </td>
 
