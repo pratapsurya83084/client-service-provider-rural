@@ -17,6 +17,8 @@ import AddServices from "./pages/Provider/AddServices/AddServices";
 import Requests from "./pages/Provider/UserRequestForBookings/Requests";
 import ProviderProfile from "./pages/Provider/ProviderProfile/ProviderProfile";
 import ProviderProtectedRoutes from "./pages/Provider/ProviderProtectedRoutes";
+import UserBookings from "./pages/Users/Bookings/UserBookings";
+import Bookings from "./pages/Users/BookingServices/BookingServices";
 
 const App = () => {
     return (
@@ -32,7 +34,8 @@ const App = () => {
             {/* mobilefooter  should be show below this route page */}
             {/* user routes */}
             <Route path="/services" element={<FarmerRoute> <Services /> </FarmerRoute>} />
-            <Route path="/bookings" element={ <FarmerRoute> <BookingServices /> </FarmerRoute> } />
+            <Route path="/bookings" element={ <FarmerRoute> <UserBookings /> </FarmerRoute> } />
+            <Route path="/bookservice/:sid" element={ <FarmerRoute> <Bookings /> </FarmerRoute> } />
             <Route path="/profile" element={ <FarmerRoute><Profile /> </FarmerRoute> } />
 
 

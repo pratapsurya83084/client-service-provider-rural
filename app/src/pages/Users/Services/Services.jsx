@@ -1,35 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import MobileFooter from "../../../components/footer/MobileFooter";
 import AdminContext from "../../../AdminContext/CreateAdminContext";
-import { toast } from "react-hot-toast";
+import { toast ,Toaster} from "react-hot-toast";
 import { UserContext } from "../../../UserContext/CreateContext";
+import NavBar from "../../../components/NavBar";
+import { Link } from "react-router-dom";
 
-const services = [
-    {
-        id: 1,
-        name: "drone sprayer",
-        category: "Agriculture Equipment",
-        code: "12233",
-        provider: "dronwala",
-        price: "₹2000",
-    },
-    {
-        id: 2,
-        name: "tractor transport bussiness",
-        category: "Water Tanker",
-        code: "1",
-        provider: "dronwala",
-        price: "₹1",
-    },
-    {
-        id: 3,
-        name: "soil testing kit",
-        category: "Agriculture Equipment",
-        code: "33412",
-        provider: "agritech",
-        price: "₹500",
-    },
-];
+
+
 
 const SearchIcon = () => (
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
@@ -71,6 +49,8 @@ const Services = () => {
     const [search, setSearch] = useState("");
     const [Categories, setCategories] = useState([]);
     const [services, setServices] = useState([]);
+    
+ 
 
     const { FetchAllCategories } = useContext(AdminContext);
     const { GetAllServices } = useContext(UserContext);
@@ -91,8 +71,10 @@ const Services = () => {
                 const cats = [{ id: 0, name: "All" }, ...(res.category || [])];
 
                 setCategories(cats);
+                return;
             } else {
                 toast.error(res.message);
+                return;
             }
         } catch (error) {
             console.log("error while fetching categories :", error);
@@ -141,6 +123,9 @@ const Services = () => {
     return (
         <div>
             <div style={styles.pageWrapper}>
+                   <NavBar/>
+
+                   <Toaster position="top-center" reverseOrder={false} />
                 <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
 
@@ -251,8 +236,8 @@ const Services = () => {
                     ) : (
                         <div className="cards-grid">
                             {filtered.map((s) => (
-                                <div className="service-card" key={s.id}>
-                                    <div>
+                                <div className="service-card" key={s?.id}>
+                                    <Link to={`/bookservice/${s?.id}`}>
                                         <p style={styles.cardName}>
                                             {s?.title}
                                         </p>
@@ -268,7 +253,7 @@ const Services = () => {
                                         <p className="text-sm text-gray-500">
                                             {s?.description}
                                         </p>
-                                    </div>
+                                    </Link>
 
                                     <span style={styles.price}>
                                         ₹. {s?.price}

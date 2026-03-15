@@ -81,7 +81,7 @@ const StateUserContext = ({ children }) => {
         }
     };
 
-    //-------------------------farmer api's function call belows start----------------------------------------------------
+    //-------farmer api's function call belows start------------
     //booking/farmer-bookings
     const getFarmerSpecificBookingServices = async (token) => {
         if (ClearLocalauth()) return;
@@ -151,6 +151,7 @@ const StateUserContext = ({ children }) => {
         district,
         description,
     ) => {
+         if (ClearLocalauth()) return;
         try {
             const res = await axios.post(
                 `${BACKEND_URL}service-provider/add`,
@@ -158,14 +159,103 @@ const StateUserContext = ({ children }) => {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization":`Bearer ${token}`
+                        Authorization: `Bearer ${token}`,
                     },
-                    withCredentials:true
+                    withCredentials: true,
                 },
             );
             return res.data;
         } catch (error) {
             console.log("error while adding service :", error);
+        }
+    };
+
+    //fetch singlepage bookings
+    const fetchSinglePageBookingServices = async (token, id) => {
+        if (ClearLocalauth()) return;
+        try {
+            const res = await axios.get(
+                `${BACKEND_URL}service-provider/get-single-service/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                },
+            );
+
+            return res.data;
+        } catch (error) {
+            console.log("error while Fetch single service :", error);
+        }
+    };
+
+    //User Booking service
+    const BookingServices = async (token, serviceId, date, address, notes) => {
+         if (ClearLocalauth()) return;
+        try {
+            const res = await axios.post(
+                `${BACKEND_URL}booking/add-booking`,
+                { serviceId: serviceId, bookingDate: date, address, notes },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                },
+            );
+
+            return res.data;
+        } catch (error) {
+            console.log("error while booking services :", error);
+            return;
+        }
+    };
+
+    //get user requested to provider only those request show provider to confirm specific user and service
+    //booking/get-user-requested-services-for-provider-Specific
+    const getProviderRequestSendedByCustomerforBooking = async (token) => {
+        if (ClearLocalauth()) return;
+        try {
+            const res = await axios.get(
+                `${BACKEND_URL}booking/get-user-requested-services-for-provider-Specific`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                },
+            );
+            return res.data;
+        } catch (error) {
+            console.log(
+                "error while retriving requested user for confirmation :",
+                error,
+            );
+            return;
+        }
+    };
+
+    // updateBookingStatus -  chnage status of that bookingId
+    const updateBookingStatus = async (token,status,bookingid) => {
+         if (ClearLocalauth()) return;
+        try {
+            const res = await axios.patch(
+                `${BACKEND_URL}booking/updatebookingStatusbyid/${bookingid}?status=${status}`,{},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                },
+            );
+
+            return res.data;
+        } catch (error) {
+            console.log("error while change status of Updating :", error);
+            return;
         }
     };
 
@@ -178,7 +268,11 @@ const StateUserContext = ({ children }) => {
                 getFarmerSpecificBookingServices,
                 GetAllServices,
                 GetProviderSpecificServices,
-                AddService
+                AddService,
+                fetchSinglePageBookingServices,
+                BookingServices,
+                getProviderRequestSendedByCustomerforBooking,
+                updateBookingStatus
             }}
         >
             {children}

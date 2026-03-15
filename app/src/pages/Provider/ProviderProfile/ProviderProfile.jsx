@@ -3,13 +3,14 @@ import MobileProviderFooter from "../../../components/footer/MobileProviderFoote
 import { UserContext } from "../../../UserContext/CreateContext";
 import { useNavigate} from 'react-router-dom'
 import {toast,Toaster} from 'react-hot-toast';
+import NavBar from "../../../components/NavBar";
 
 
 
 const ProviderProfile = () => {
   const [loading, setLoading] = useState(true);
   const { GetProfile } = useContext(UserContext);
- 
+  const [tabname ,settabname] = useState("providerprofile");
   const navigate = useNavigate();
 
   async function getUserProfile() {
@@ -52,6 +53,7 @@ const ProviderProfile = () => {
 
   return (
     <div style={styles.page}>
+      <NavBar/>
         <Toaster position="top-center" reverseOrder={false} />
       <div style={styles.container}>
         <h1 style={styles.heading}>Profile</h1>
@@ -93,7 +95,7 @@ const ProviderProfile = () => {
       </div>
 
       {/* Provider Footer */}
-      {!loading && user?.role === "Provider" && <MobileProviderFooter />}
+      {!loading && user?.role === "Provider" &&  <MobileProviderFooter tabname={tabname}  settabname={settabname}/>}
     </div>
   );
 };

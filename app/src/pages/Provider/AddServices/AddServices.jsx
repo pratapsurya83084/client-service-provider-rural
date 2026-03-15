@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import MobileProviderFooter from "../../../components/footer/MobileProviderFooter";
 import { UserContext } from "../../../UserContext/CreateContext";
 import { toast, Toaster } from "react-hot-toast";
-
+import {useNavigate}  from 'react-router-dom';
+import NavBar from "../../../components/NavBar";
 const categories = [
     "Agriculture Equipment",
     "Water Tanker",
@@ -16,7 +17,7 @@ const categories = [
 const AddServices = () => {
     const [loading, setLoading] = useState(true);
     const { GetProfile, AddService } = useContext(UserContext);
-
+ const [tabname ,settabname] = useState("addservicebyprovider");
     const [form, setForm] = useState({
         title: "",
         category: "",
@@ -24,6 +25,7 @@ const AddServices = () => {
         district: "",
         description: "",
     });
+    const navigate = useNavigate();
 
     const token = localStorage.getItem("token");
 
@@ -70,6 +72,7 @@ const AddServices = () => {
                     district: "",
                     description: "",
                 });
+                navigate("/myservices");
                 return;
             } else {
                 toast.error(res.message);
@@ -83,6 +86,7 @@ const AddServices = () => {
 
     return (
         <div style={styles.page}>
+               <NavBar/>
             <Toaster position="top-center" reverseOrder={false} />
             <div style={styles.container}>
                 {/* Header */}
@@ -189,7 +193,7 @@ const AddServices = () => {
 
             {/* Provider Footer */}
             {!loading && User?.[0]?.role === "Provider" && (
-                <MobileProviderFooter />
+                <MobileProviderFooter tabname={tabname}  settabname={settabname}/>
             )}
         </div>
     );

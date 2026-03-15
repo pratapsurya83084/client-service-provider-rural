@@ -1,7 +1,14 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const AdminProtectedRoutes = ({ children }) => {
-  const userAuth = JSON.parse(localStorage.getItem("userAuth"));
+  const navigate = useNavigate();
+  const userAuth = JSON.parse(localStorage.getItem("userAuth")) ;
+
+  // if (!userAuth) {
+  //   navigate("/login")
+  // return;  
+  // }
+
  const token = localStorage.getItem("token");
   if (!token) {
     return <Navigate to="/login" />;

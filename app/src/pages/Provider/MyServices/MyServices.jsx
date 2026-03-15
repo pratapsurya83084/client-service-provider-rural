@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import MobileProviderFooter from "../../../components/footer/MobileProviderFooter";
 import { UserContext } from "../../../UserContext/CreateContext";
+import NavBar from "../../../components/NavBar";
 
 
 const MyServices = () => {
     const [loading, setLoading] = useState(true);
     const { GetProfile, GetProviderSpecificServices } = useContext(UserContext);
     const [services, setServices] = useState([]);
-
+ const [tabname ,settabname] = useState("myservices");
     const token = localStorage.getItem("token");
 
     // const token = Cookies.get("token");
@@ -67,6 +68,7 @@ const MyServices = () => {
 
     return (
         <div className="bg-blue-50  pb-20  md:pb-0">
+               <NavBar/>
             <div style={styles.container}>
                 <h1 style={styles.heading}>My Services</h1>
                 <p style={styles.subheading}>
@@ -90,7 +92,7 @@ const MyServices = () => {
             </div>
             {/* provider footer */}
             {!loading && User?.[0]?.role === "Provider" && (
-                <MobileProviderFooter />
+                <MobileProviderFooter tabname={tabname}  settabname={settabname}/>
             )}
         </div>
     );

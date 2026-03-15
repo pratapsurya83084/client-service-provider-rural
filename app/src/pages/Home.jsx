@@ -11,12 +11,15 @@ import MobileFooter from '../components/footer/MobileFooter';
 import MobileProviderFooter from '../components/footer/MobileProviderFooter';
 import { UserContext } from '../UserContext/CreateContext'
 import { Toaster,toast } from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 
 const Home = () => {
   
   const [loading, setLoading] = useState(true);
     const { GetProfile } = useContext(UserContext);
+    const navigate = useNavigate();
+    
   // const token = Cookies.get("token");
     async function getUserProfile() {
         const token = localStorage.getItem("token");
@@ -43,6 +46,11 @@ const Home = () => {
 // get UserAuth
   const User =  JSON.parse(localStorage.getItem("userAuth"));
   // console.log("profile :",User);
+   if (User===undefined) {
+    navigate("/login")
+    return;
+
+   }
 
   return (
     <div>

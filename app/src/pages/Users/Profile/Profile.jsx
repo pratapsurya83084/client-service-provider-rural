@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../../UserContext/CreateContext";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import NavBar from "../../../components/NavBar";
 
 // ── Profile Page
 const Profile = () => {
@@ -67,6 +68,7 @@ const Profile = () => {
 
     return (
         <div className="min-h-screen bg-[#EEF2F7] font-sans">
+               <NavBar/>
             {/* Success toast */}
             {saved && (
                 <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-sm font-semibold px-5 py-3 rounded-xl z-[999] shadow-lg whitespace-nowrap animate-bounce">
