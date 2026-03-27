@@ -44,7 +44,7 @@ const Requests = () => {
                 await getProviderRequestSendedByCustomerforBooking(token);
             if (res.success) {
                 setBookingsRequest(res.data || []);
-                console.log(res.data);
+                // console.log(res.data);
             } else {
                 console.log(res);
             }
@@ -274,7 +274,7 @@ const styles = {
         paddingBottom: 80,
     },
     container: {
-        maxWidth: 600,
+        maxWidth: 900,
         margin: "0 auto",
         padding: "32px 16px 16px",
     },

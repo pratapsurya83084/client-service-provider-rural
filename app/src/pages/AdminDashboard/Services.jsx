@@ -7,12 +7,11 @@ const Services = () => {
     const [search, setSearch] = useState("");
     const [services, setServices] = useState([]);
     const [deactivated, setDeactivated] = useState({});
-    const { FetchAllServices, ServiceStatusUpdateByAdmin,DeleteServiceByAdmin } =
-        useContext(AdminContext);
+    const { FetchAllServices, ServiceStatusUpdateByAdmin,DeleteServiceByAdmin } = useContext(AdminContext);
 
     const token = localStorage.getItem("token");
 
-    async function fetAllServices() {
+    async function fetchAllServices() {
         if (!token) {
             toast.error("Session expired ,Login please");
             return;
@@ -34,7 +33,7 @@ const Services = () => {
     }
 
     useEffect(() => {
-        fetAllServices();
+        fetchAllServices();
     }, []);
 
     const filtered = services.filter((s) => {
@@ -56,7 +55,7 @@ const Services = () => {
             if (res.success) {
                 toast.success(res.message);
                 // console.log("status is :", res);
-                fetAllServices();
+                fetchAllServices();
                 return;
             } else {
                 toast.error(res.message);

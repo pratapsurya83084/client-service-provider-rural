@@ -2,11 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import MobileProviderFooter from "../../../components/footer/MobileProviderFooter";
 import { UserContext } from "../../../UserContext/CreateContext";
 import NavBar from "../../../components/NavBar";
-
+import AdminContext from "../../../AdminContext/CreateAdminContext";
+import { toast, Toaster } from "react-hot-toast";
 
 const MyServices = () => {
     const [loading, setLoading] = useState(true);
     const { GetProfile, GetProviderSpecificServices } = useContext(UserContext);
+       const {DeleteServiceByAdmin } = useContext(AdminContext);
     const [services, setServices] = useState([]);
  const [tabname ,settabname] = useState("myservices");
     const token = localStorage.getItem("token");
@@ -58,17 +60,36 @@ const MyServices = () => {
     // get UserAuth
     const User = JSON.parse(localStorage.getItem("userAuth"));
 
-    const handleDeactivate = (id) => {
-        console.log("Deactivate service:", id);
-    };
+    // const handleDeactivate = (id) => {
+    //     console.log("Deactivate service:", id);
+    // };
 
-    const handleDelete = (id) => {
-        console.log("Delete service:", id);
+    const handleDelete = async(id) => {
+        // console.log("Delete service:", id);
+     try {
+       
+      const res = await DeleteServiceByAdmin(token,id);
+      if (res.success) {
+          toast.success(res.message);
+          GetProviderSpecificServ();
+          console.log(res);
+            return;
+
+         }
+         else{
+            toast.error(res.message);
+            return;
+         }
+       } catch (error) {
+        console.log("error while deleting services :",error);
+        return;
+       }
     };
 
     return (
         <div className="bg-blue-50  pb-20  md:pb-0">
                <NavBar/>
+               <Toaster   position="top-center" reverseOrder={false} />
             <div style={styles.container}>
                 <h1 style={styles.heading}>My Services</h1>
                 <p style={styles.subheading}>
@@ -83,7 +104,7 @@ const MyServices = () => {
                             <ServiceCard
                                 key={service.id}
                                 service={service}
-                                onDeactivate={handleDeactivate}
+                                // onDeactivate={handleDeactivate}
                                 onDelete={handleDelete}
                             />
                         ))
@@ -123,12 +144,12 @@ const ServiceCard = ({ service, onDeactivate, onDelete }) => {
             </p>
 
             <div style={styles.actions}>
-                <button
+                {/* <button
                     style={styles.deactivateBtn}
                     onClick={() => onDeactivate(service?.id)}
                 >
                     Deactivate
-                </button>
+                </button> */}
                 <button
                     style={styles.deleteBtn}
                     onClick={() => onDelete(service.id)}

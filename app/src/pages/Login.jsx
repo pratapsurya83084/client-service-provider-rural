@@ -25,15 +25,10 @@ const Login = () => {
             const res = await Login(mobile, Password);
             if (res.success) {
                 toast.success(res.message);
-                localStorage.setItem("token", res.token);
+                // localStorage.setItem("token", res.token);
 
-                const oneHour = 60 * 60 * 1000;
-                localStorage.setItem("ExpireTime", Date.now() + oneHour);
-
-                setTimeout(() => {
-                    navigate("/");
-                }, 2000);
-                // console.log(res);
+    
+              navigate(`/verify-otp/mobileNumber/${mobile}`);
 
                 return;
             } else {
@@ -286,7 +281,7 @@ const Login = () => {
                                 "0 4px 18px rgba(37,99,235,0.30)";
                         }}
                     >
-                        Login
+                        Send Otp
                     </button>
 
                     <div className="flex justify-end items-center p-2 text-sm">

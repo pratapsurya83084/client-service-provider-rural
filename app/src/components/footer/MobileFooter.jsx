@@ -84,7 +84,7 @@ const ProfileIcon = ({ active }) => (
 
 
 const tabs = [
-  { id: '/', label: 'Home', Icon: HomeIcon },
+  { id: 'dashboard-user', label: 'Home', Icon: HomeIcon },
   { id: 'services', label: 'Services', Icon: ServicesIcon },
   { id: 'bookings', label: 'Bookings', Icon: BookingsIcon },
   { id: 'profile', label: 'Profile', Icon: ProfileIcon },

@@ -259,6 +259,23 @@ const StateUserContext = ({ children }) => {
         }
     };
 
+    const VerifyOtp=async(phoneNumber)=>{
+     try {
+        
+    const res = await axios.post(`${BACKEND_URL}users/verify-otp`,{mobileNumber:phoneNumber},{
+        headers:{
+            "Content-Type":"application/json",
+        }
+    })
+
+    return res.data;
+
+     } catch (error) {
+        console.log("error while verifying Otp:",error);
+        return;
+     }
+    }
+
     return (
         <UserContext.Provider
             value={{
@@ -272,7 +289,8 @@ const StateUserContext = ({ children }) => {
                 fetchSinglePageBookingServices,
                 BookingServices,
                 getProviderRequestSendedByCustomerforBooking,
-                updateBookingStatus
+                updateBookingStatus,
+                VerifyOtp
             }}
         >
             {children}

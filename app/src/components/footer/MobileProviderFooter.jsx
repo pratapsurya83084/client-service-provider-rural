@@ -151,7 +151,7 @@ const ProfileIcon = ({ active }) => (
 );
 
 const tabs = [
-    { id: "", label: "Home", Icon: HomeIcon },
+    { id: "dashboard-provider", label: "Home", Icon: HomeIcon },
     { id: "MyServices", label: "Services", Icon: ServicesIcon },
     { id: "AddServiceByProvider", label: "Add", Icon: AddIcon },
     {
