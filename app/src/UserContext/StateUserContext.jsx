@@ -151,7 +151,7 @@ const StateUserContext = ({ children }) => {
         district,
         description,
     ) => {
-         if (ClearLocalauth()) return;
+        if (ClearLocalauth()) return;
         try {
             const res = await axios.post(
                 `${BACKEND_URL}service-provider/add`,
@@ -192,7 +192,7 @@ const StateUserContext = ({ children }) => {
 
     //User Booking service
     const BookingServices = async (token, serviceId, date, address, notes) => {
-         if (ClearLocalauth()) return;
+        if (ClearLocalauth()) return;
         try {
             const res = await axios.post(
                 `${BACKEND_URL}booking/add-booking`,
@@ -239,11 +239,12 @@ const StateUserContext = ({ children }) => {
     };
 
     // updateBookingStatus -  chnage status of that bookingId
-    const updateBookingStatus = async (token,status,bookingid) => {
-         if (ClearLocalauth()) return;
+    const updateBookingStatus = async (token, status, bookingid) => {
+        if (ClearLocalauth()) return;
         try {
             const res = await axios.patch(
-                `${BACKEND_URL}booking/updatebookingStatusbyid/${bookingid}?status=${status}`,{},
+                `${BACKEND_URL}booking/updatebookingStatusbyid/${bookingid}?status=${status}`,
+                {},
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -259,22 +260,55 @@ const StateUserContext = ({ children }) => {
         }
     };
 
-    const VerifyOtp=async(phoneNumber)=>{
-     try {
-        
-    const res = await axios.post(`${BACKEND_URL}users/verify-otp`,{mobileNumber:phoneNumber},{
-        headers:{
-            "Content-Type":"application/json",
+    const VerifyOtp = async (phoneNumber) => {
+        if (ClearLocalauth()) return;
+        try {
+            const res = await axios.post(
+                `${BACKEND_URL}users/verify-otp`,
+                { mobileNumber: phoneNumber },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                },
+            );
+
+            return res.data;
+        } catch (error) {
+            console.log("error while verifying Otp:", error);
+            return;
         }
-    })
+    };
 
-    return res.data;
+    //PaymentCompleteStatusUpdate
 
-     } catch (error) {
-        console.log("error while verifying Otp:",error);
+  const PaymentCompleteStatusUpdate = async (token, bookingId, paymentId) => {
+    if (ClearLocalauth()) return;
+
+    try {
+        const res = await axios.post(
+            `${BACKEND_URL}booking/payment-complete`,
+            {
+                bookingId: bookingId,
+                razorpayPaymentId: paymentId
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                withCredentials: true
+            }
+        );
+
+        return res.data;
+    } catch (error) {
+        console.log("error while updating payment:", error);
         return;
-     }
     }
+};
+
+
 
     return (
         <UserContext.Provider
@@ -290,7 +324,8 @@ const StateUserContext = ({ children }) => {
                 BookingServices,
                 getProviderRequestSendedByCustomerforBooking,
                 updateBookingStatus,
-                VerifyOtp
+                VerifyOtp,
+                PaymentCompleteStatusUpdate
             }}
         >
             {children}

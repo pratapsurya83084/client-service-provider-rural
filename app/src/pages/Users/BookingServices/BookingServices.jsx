@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../../UserContext/CreateContext";
 import NavBar from "../../../components/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_KEY_RAZORPAY } from "../../../lib/ApiConnection";
 
 // ── Pin icon ─────
 const PinIcon = () => (
@@ -21,40 +22,92 @@ const Bookings = () => {
     const [notes, setNotes] = useState("");
     const [submitted, setSubmitted] = useState(false);
 
-    const { fetchSinglePageBookingServices,BookingServices } = useContext(UserContext);
-    const [Bookings, setBookings] = useState();
+    const { fetchSinglePageBookingServices, BookingServices ,PaymentCompleteStatusUpdate} =
+        useContext(UserContext);
+    const [Bookings, setBookings] = useState([]);
     const { sid } = useParams();
     const navigate = useNavigate();
     const id = parseInt(sid);
-    // console.log(date);
+    // console.log(Bookings[0]?.price);
 
     const token = localStorage.getItem("token");
 
-    const handleConfirm = async () => {
-        if (!date || !address) return;
-       
-        try {
-            //call here booking API
-            const res = await BookingServices(token,Bookings?.id,date,address,notes);
-            // console.log(res)
-            if (res.success) {
-                // console.log(res.data);
-              setSubmitted(true);   
-              setTimeout(() => setSubmitted(false), 3000);
-              navigate("/bookings")
-              return;
-            }else{
-                setSubmitted(false);
-                return;
-            }
-        } catch (error) {
-            console.log("error while booking services :",error);
+    const loadRazorpayScript = () => {
+        return new Promise((resolve) => {
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.onload = () => {
+                resolve(true);
+            };
+            script.onerror = () => {
+                resolve(false);
+            };
+            document.body.appendChild(script);
+        });
+    };
+
+  const handleConfirm = async () => {
+    if (!date || !address) return;
+
+    // console.log('bookings :',Bookings[0].price)
+    try {
+        const res = await BookingServices(
+            token,
+            Bookings[0]?.id,
+            date,
+            address,
+            notes
+        );
+
+        if (!res.success) return;
+        //    console.log("res :",res);
+        const isLoaded = await loadRazorpayScript();
+        if (!isLoaded) {
+            alert("Razorpay SDK failed to load");
             return;
         }
-   
 
-      
+        // Create order from backend
+    //   console.log("res :",res.booking.id);
+
+        const options = {
+        key: API_KEY_RAZORPAY,
+        amount: Bookings[0]?.price*100,
+        currency: "INR",
+        order_id: res?.order_id, 
+
+         handler: async function (response) {
+            // console.log("SUCCESS:", response);
+
+            // call backend to update payment
+            const paymentRes = await PaymentCompleteStatusUpdate(
+                token,
+                res.booking.id,
+                response.razorpay_payment_id
+            );
+
+            // console.log("Payment update:", paymentRes);
+
+            alert("Payment Successful ✅");
+            navigate("/bookings");
+        }
+        
+
     };
+
+        const rzp = new window.Razorpay(options);
+
+        rzp.on("payment.failed", function (response) {
+            console.log("FAILED:", response.error);
+            alert("Payment Failed");
+        });
+
+        rzp.open();
+
+    } catch (error) {
+        console.log("error:", error);
+    }
+};
 
     const User = JSON.parse(localStorage.getItem("userAuth"));
 
@@ -69,7 +122,7 @@ const Bookings = () => {
 
             if (res.success) {
                 // console.log(res.data);
-                setBookings(res.data || []);
+                setBookings([res.data] || []);
                 return;
             } else {
                 toast.error(res.message);
@@ -177,19 +230,25 @@ const Bookings = () => {
                 <div className="layout-grid">
                     <div>
                         <div className="fade-up" style={s.card}>
-                            <h1 style={s.serviceName}>{Bookings?.title||"NA"}</h1>
+                            <h1 style={s.serviceName}>
+                                {Bookings[0]?.title || "NA"}
+                            </h1>
 
                             <div style={s.badgeRow}>
-                                <span style={s.badge}>{Bookings?.title||"NA"}</span>
+                                <span style={s.badge}>
+                                    {Bookings[0]?.title || "NA"}
+                                </span>
 
                                 <span style={s.codeTag}>
-                                    <PinIcon /> {Bookings?.district||"NA"}
+                                    <PinIcon /> {Bookings[0]?.district || "NA"}
                                 </span>
                             </div>
 
-                            <p style={s.price}>₹{Bookings?.price||"NA"}</p>
+                            <p style={s.price}>₹{Bookings[0]?.price || "NA"}</p>
 
-                            <p style={s.description}>{Bookings?.description||"NA"}</p>
+                            <p style={s.description}>
+                                {Bookings[0]?.description || "NA"}
+                            </p>
                         </div>
                     </div>
 

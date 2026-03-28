@@ -2,63 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import AdminContext from "../../AdminContext/CreateAdminContext";
 import { toast, Toaster } from "react-hot-toast";
 
-const BOOKINGS = [
-    {
-        id: 1,
-        service: "drone sprayer",
-        customer: "User",
-        mobile: "8894449993",
-        provider: "Patil_Agro",
-        date: "11/2/2026",
-        status: "COMPLETED",
-        address: "pune,3sector ,west corner ,kannect office",
-        created: "11/2/2026",
-    },
-    {
-        id: 2,
-        service: "tractor transport bussiness",
-        customer: "vivek",
-        mobile: "9309872426",
-        provider: "Patil_Agro",
-        date: "12/2/2026",
-        status: "PENDING",
-        address: "mumbai, andheri east, near station",
-        created: "12/2/2026",
-    },
-    {
-        id: 3,
-        service: "water pump rental",
-        customer: "Test Customer",
-        mobile: "9876543210",
-        provider: "waterpro",
-        date: "13/2/2026",
-        status: "CONFIRMED",
-        address: "nashik, college road, shop no 5",
-        created: "13/2/2026",
-    },
-    {
-        id: 4,
-        service: "soil testing kit",
-        customer: "vk",
-        mobile: "1133224455",
-        provider: "agritech",
-        date: "14/2/2026",
-        status: "INPROGRESS",
-        address: "aurangabad, cidco n6, block b",
-        created: "14/2/2026",
-    },
-    {
-        id: 5,
-        service: "electric fence setup",
-        customer: "vh",
-        mobile: "2134567890",
-        provider: "voltfarm",
-        date: "15/2/2026",
-        status: "CANCELLED",
-        address: "solapur, market yard, warehouse 3",
-        created: "15/2/2026",
-    },
-];
 
 const STATUS_STYLES = {
     PENDING: { color: "#facc15", border: "#facc15" },
@@ -68,14 +11,14 @@ const STATUS_STYLES = {
     CANCELLED: { color: "#f85149", border: "#f85149" },
 };
 
-const FILTERS = [
-    "All",
-    "Pending",
-    "Confirmed",
-    "InProgress",
-    "Completed",
-    "Cancelled",
-];
+// const FILTERS = [
+//     "All",
+//     "Pending",
+//     "Confirmed",
+//     "InProgress",
+//     "Completed",
+//     "Cancelled",
+// ];
 
 const Bookings = () => {
     const [search, setSearch] = useState("");
@@ -177,7 +120,7 @@ const Bookings = () => {
                     className="bg-[#161b22] border border-[#30363d] text-[#c9d1d9] placeholder-[#484f58] rounded-md px-4 py-2 text-[13px] outline-none focus:border-[#4ade80] transition-colors duration-150 w-full max-w-[260px]"
                 />
 
-                <div className="flex flex-wrap gap-2">
+                {/* <div className="flex flex-wrap gap-2">
                     {FILTERS.map((f) => {
                         const active = filter === f;
                         const st = STATUS_STYLES[f.toUpperCase()] || null;
@@ -204,13 +147,12 @@ const Bookings = () => {
                                                 borderColor: "#30363d",
                                                 background: "transparent",
                                             }
-                                }
-                            >
+                                }>
                                 {f}
                             </button>
                         );
                     })}
-                </div>
+                </div> */}
             </div>
 
             {/* Table */}
@@ -308,7 +250,7 @@ const Bookings = () => {
                                                     ).toDateString()}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-4 text-[12.5px] text-[#8b949e] max-w-[220px]">
+                                            <td className={`${b?.status==="Completed"&&"text-green-400"} ${b?.status==="Pending"&&"text-red-600"} ${b?.status==="Confirmed"&&"text-yellow-500"}  px-4 py-4 text-[12.5px] text-[#8b949e] max-w-[220px]`}>
                                                 {b?.status}
                                             </td>
 

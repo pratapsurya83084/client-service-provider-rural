@@ -100,7 +100,7 @@ export default function Dashboard() {
   const [hovered, setHovered] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
   const [browseAll, setBrowseAll] = useState(false);
-   const [activeTab, setActiveTab] = useState("dashboard-user");
+   const [activeTab, setActiveTab] = useState("home");
 
   const activeService = selectedService !== null ? services[selectedService] : null;
 

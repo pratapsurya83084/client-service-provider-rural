@@ -1,92 +1,7 @@
-// import React from 'react'
-
-// const Providers = () => {
-//   return (
-//     <div>
-//       Providers
-//     </div>
-//   )
-// }
-
-// export default Providers
-
 import React, { useContext, useEffect, useState } from "react";
-import Navbar from "./Navbar";
+
 import AdminContext from "../../AdminContext/CreateAdminContext";
 import { toast, Toaster } from "react-hot-toast";
-
-const USERS = [
-    {
-        id: 7,
-        name: "vivek",
-        mobile: "9309872426",
-        email: "",
-        role: "CUSTOMER",
-        status: "ACTIVE",
-        approved: true,
-        joined: "23/2/2026",
-    },
-    {
-        id: 6,
-        name: "vh",
-        mobile: "2134567890",
-        email: "",
-        role: "CUSTOMER",
-        status: "ACTIVE",
-        approved: true,
-        joined: "12/2/2026",
-    },
-    {
-        id: 5,
-        name: "dronwala",
-        mobile: "7788334455",
-        email: "dronwala@kannect.com",
-        role: "PROVIDER",
-        status: "ACTIVE",
-        approved: true,
-        joined: "11/2/2026",
-    },
-    {
-        id: 4,
-        name: "User",
-        mobile: "8894449993",
-        email: "",
-        role: "CUSTOMER",
-        status: "ACTIVE",
-        approved: true,
-        joined: "11/2/2026",
-    },
-    {
-        id: 3,
-        name: "vk",
-        mobile: "1133224455",
-        email: "",
-        role: "PROVIDER",
-        status: "ACTIVE",
-        approved: true,
-        joined: "11/2/2026",
-    },
-    {
-        id: 2,
-        name: "Test Customer",
-        mobile: "9876543210",
-        email: "",
-        role: "CUSTOMER",
-        status: "ACTIVE",
-        approved: true,
-        joined: "11/2/2026",
-    },
-    {
-        id: 1,
-        name: "System Admin",
-        mobile: "0000000000",
-        email: "admin@kannect.com",
-        role: "ADMIN",
-        status: "ACTIVE",
-        approved: true,
-        joined: "1/1/2026",
-    },
-];
 
 const ROLE_COLORS = {
     PROVIDER: { color: "#facc15", border: "#facc15" },
@@ -298,17 +213,7 @@ const Providers = () => {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        {["Provider"].map((r) => (
-                            <button
-                                key={r}
-                                className={`filter-btn ${roleFilter === r ? "active" : ""}`}
-                                onClick={() => setRoleFilter(r)}
-                            >
-                                {r}
-                            </button>
-                        ))}
-                    </div>
+                   
                 </div>
 
                 {/* Table */}
@@ -323,7 +228,7 @@ const Providers = () => {
                                         "MOBILE",
                                         "EMAIL",
                                         "ROLE",
-                                        "STATUS",
+                                        // "STATUS",
                                         "APPROVED",
                                         "JOINED",
                                         "ACTIONS",
@@ -408,10 +313,10 @@ const Providers = () => {
                                                     >
                                                         {u?.isApproved
                                                             ? "Accept"
-                                                            : "Denied"}
+                                                            : "Reject"}
                                                     </span>
                                                 </td>
-                                                <td>
+                                                {/* <td>
                                                     <span
                                                         className="badge"
                                                         style={{
@@ -426,7 +331,7 @@ const Providers = () => {
                                                             ? "Active"
                                                             : "InActive"}
                                                     </span>
-                                                </td>
+                                                </td> */}
                                                 <td className="mono">
                                                     {new Date(
                                                         u?.createdAt,

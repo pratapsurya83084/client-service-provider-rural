@@ -239,7 +239,7 @@ const Users = () => {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    {/* <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                         {["All", "Customer", "Provider", "Admin"].map((r) => (
                             <button
                                 key={r}
@@ -249,7 +249,7 @@ const Users = () => {
                                 {r}
                             </button>
                         ))}
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Table */}

@@ -265,8 +265,8 @@ const Services = () => {
                                                             }}
                                                         >
                                                             {!s?.isActive
-                                                                ? "INACTIVE"
-                                                                : "Active"}
+                                                                ? "Reject"
+                                                                : "Approved"}
                                                         </span>
                                                     </td>
 
@@ -332,8 +332,8 @@ const Services = () => {
                                                             }}
                                                         >
                                                             {s.isActive
-                                                                ? "Deactivate"
-                                                                : "Activate"}
+                                                                ? "Reject"
+                                                                : "Approved"}
                                                         </button>
                                                     </td>
                                                     <td>

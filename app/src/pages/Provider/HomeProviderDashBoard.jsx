@@ -16,12 +16,11 @@ export default function ProviderDashboard() {
     const [services, setServices] = useState([]);
     const [BookingReq, setBookingsRequest] = useState([]);
     const navigate = useNavigate();
-
+    const [tabname, settabname] = useState("dashboard-provider");
     const {
         GetProviderSpecificServices,
         getProviderRequestSendedByCustomerforBooking,
     } = useContext(UserContext);
-    
 
     const token = localStorage.getItem("token");
 
@@ -163,7 +162,12 @@ export default function ProviderDashboard() {
             </div>
 
             {/* provider footer */}
-            {User?.[0]?.role === "Provider" && <MobileProviderFooter />}
+            {User?.[0]?.role === "Provider" && (
+                <MobileProviderFooter
+                    tabname={tabname}
+                    settabname={settabname}
+                />
+            )}
 
             <style>{`
         @keyframes slide-up {

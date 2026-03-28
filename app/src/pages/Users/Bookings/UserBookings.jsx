@@ -18,7 +18,7 @@ const UserBookings = () => {
             const res = await getFarmerSpecificBookingServices(token);
 
             if (res.success) {
-                console.log("user bookings :", res.data);
+                // console.log("user bookings :", res.data);
                 setBookings(res.data || []);
             }
         } catch (error) {
