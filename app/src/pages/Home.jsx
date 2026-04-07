@@ -17,12 +17,10 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     // const { GetProfile } = useContext(UserContext);
     const navigate = useNavigate();
+    const token = localStorage.getItem("token");
 
-    // const token = Cookies.get("token");
-
-    // get UserAuth
     const User = JSON.parse(localStorage.getItem("userAuth"));
-   
+
     if (User === undefined) {
         navigate("/login");
         return;
@@ -42,9 +40,7 @@ const Home = () => {
             {User?.[0]?.role === "Farmer" && <MobileFooter />}
 
             {/* provider footer */}
-            {User?.[0]?.role === "Provider" && (
-                <MobileProviderFooter />
-            )}
+            {User?.[0]?.role === "Provider" && <MobileProviderFooter />}
         </div>
     );
 };

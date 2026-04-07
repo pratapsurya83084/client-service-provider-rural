@@ -10,6 +10,7 @@ const Profile = () => {
     const [activeTab, setActiveTab] = useState("profile");
     const [name, setName] = useState("NA");
     const [email, setEmail] = useState("NA");
+    const [mobileNumber, setMobileNumber] = useState("NA");
     const [saved, setSaved] = useState(false);
     const { GetProfile } = useContext(UserContext);
     const token = localStorage.getItem("token");
@@ -29,6 +30,7 @@ const Profile = () => {
             // console.log("profile is :", res);
             setEmail(res[0].email);
             setName(res[0].username);
+            setMobileNumber(res[0].mobileNumber); 
             setProfile(res);
         } catch (error) {
             console.log("error while fetching profile :", error);
@@ -54,6 +56,7 @@ const Profile = () => {
     //   const user = { email,mobileNumber,role } = Profile;
     const handleSave = () => {
         if (!name.trim()) return;
+        console.log(name,email);
         setSaved(true);
         setTimeout(() => setSaved(false), 2500);
     };
@@ -63,7 +66,7 @@ const Profile = () => {
       // get UserAuth
   const User =  JSON.parse(localStorage.getItem("userAuth"));
 
-//   console.log("profile :",User);
+  console.log("profile :",User);
 
 
     return (
@@ -125,6 +128,18 @@ const Profile = () => {
                             onChange={(e) => setName(e.target.value)}
                             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-gray-800 outline-none focus:border-[#3B9EE8] transition-colors duration-150 bg-white"
                             placeholder="Your name"
+                        />
+                    </div>
+                     <div className="flex flex-col gap-1.5">
+                        <label className="text-[11px] font-bold text-gray-400 tracking-widest uppercase">
+                            Mobile Number
+                        </label>
+                        <input
+                            type="number"
+                            value={mobileNumber}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-gray-800 outline-none focus:border-[#3B9EE8] transition-colors duration-150 bg-white"
+                            placeholder="Your mobileNumber"
                         />
                     </div>
 

@@ -333,7 +333,7 @@ const Services = () => {
                                                         >
                                                             {s.isActive
                                                                 ? "Reject"
-                                                                : "Approved"}
+                                                                : "Approve"}
                                                         </button>
                                                     </td>
                                                     <td>

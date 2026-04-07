@@ -345,8 +345,9 @@ const NavBar = () => {
                         {token && User?.[0].role === "Admin" && (
                             <Link to={"/dashboard"}>
                                 <button
+                                className="px-2 py-2 md:px-4 md:py-3 ml-2"
                                     style={{
-                                        padding: "9px 20px",
+                                        // padding: "9px 20px",
                                         borderRadius: "9px",
                                         border: "none",
                                         cursor: "pointer",

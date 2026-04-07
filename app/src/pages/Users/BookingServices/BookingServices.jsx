@@ -22,8 +22,11 @@ const Bookings = () => {
     const [notes, setNotes] = useState("");
     const [submitted, setSubmitted] = useState(false);
 
-    const { fetchSinglePageBookingServices, BookingServices ,PaymentCompleteStatusUpdate} =
-        useContext(UserContext);
+    const {
+        fetchSinglePageBookingServices,
+        BookingServices,
+        PaymentCompleteStatusUpdate,
+    } = useContext(UserContext);
     const [Bookings, setBookings] = useState([]);
     const { sid } = useParams();
     const navigate = useNavigate();
@@ -46,68 +49,65 @@ const Bookings = () => {
         });
     };
 
-  const handleConfirm = async () => {
-    if (!date || !address) return;
+    const handleConfirm = async () => {
+        if (!date || !address) return;
 
-    // console.log('bookings :',Bookings[0].price)
-    try {
-        const res = await BookingServices(
-            token,
-            Bookings[0]?.id,
-            date,
-            address,
-            notes
-        );
-
-        if (!res.success) return;
-        //    console.log("res :",res);
-        const isLoaded = await loadRazorpayScript();
-        if (!isLoaded) {
-            alert("Razorpay SDK failed to load");
-            return;
-        }
-
-        // Create order from backend
-    //   console.log("res :",res.booking.id);
-
-        const options = {
-        key: API_KEY_RAZORPAY,
-        amount: Bookings[0]?.price*100,
-        currency: "INR",
-        order_id: res?.order_id, 
-
-         handler: async function (response) {
-            // console.log("SUCCESS:", response);
-
-            // call backend to update payment
-            const paymentRes = await PaymentCompleteStatusUpdate(
+        // console.log('bookings :',Bookings[0].price)
+        try {
+            const res = await BookingServices(
                 token,
-                res.booking.id,
-                response.razorpay_payment_id
+                Bookings[0]?.id,
+                date,
+                address,
+                notes,
             );
 
-            // console.log("Payment update:", paymentRes);
+            if (!res.success) return;
+            //    console.log("res :",res);
+            const isLoaded = await loadRazorpayScript();
+            if (!isLoaded) {
+                alert("Razorpay SDK failed to load");
+                return;
+            }
 
-            alert("Payment Successful ✅");
-            navigate("/bookings");
+            // Create order from backend
+            //   console.log("res :",res.booking.id);
+
+            const options = {
+                key: API_KEY_RAZORPAY,
+                amount: Bookings[0]?.price * 100,
+                currency: "INR",
+                order_id: res?.order_id,
+
+                handler: async function (response) {
+                    // console.log("SUCCESS:", response);
+
+                    // call backend to update payment
+                    const paymentRes = await PaymentCompleteStatusUpdate(
+                        token,
+                        res.booking.id,
+                        response.razorpay_payment_id,
+                    );
+
+                    // console.log("Payment update:", paymentRes);
+
+                    alert("Payment Successful ✅");
+                    navigate("/bookings");
+                },
+            };
+
+            const rzp = new window.Razorpay(options);
+
+            rzp.on("payment.failed", function (response) {
+                console.log("FAILED:", response.error);
+                alert("Payment Failed");
+            });
+
+            rzp.open();
+        } catch (error) {
+            console.log("error:", error);
         }
-        
-
     };
-
-        const rzp = new window.Razorpay(options);
-
-        rzp.on("payment.failed", function (response) {
-            console.log("FAILED:", response.error);
-            alert("Payment Failed");
-        });
-
-        rzp.open();
-
-    } catch (error) {
-        console.log("error:", error);
-    }
-};
 
     const User = JSON.parse(localStorage.getItem("userAuth"));
 

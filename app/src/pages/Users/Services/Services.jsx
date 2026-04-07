@@ -49,7 +49,7 @@ const Services = () => {
     const [search, setSearch] = useState("");
     const [Categories, setCategories] = useState([]);
     const [services, setServices] = useState([]);
-    
+    console.log(services)
  
 
     const { FetchAllCategories } = useContext(AdminContext);
@@ -235,7 +235,7 @@ const Services = () => {
                         <div style={styles.empty}>No services found.</div>
                     ) : (
                         <div className="cards-grid">
-                            {filtered.map((s) => (
+                            {filtered?.filter((s) => s?.isActive === true).map((s) => (
                                 <div className="service-card" key={s?.id}>
                                     <Link to={`/bookservice/${s?.id}`}>
                                         <p style={styles.cardName}>
